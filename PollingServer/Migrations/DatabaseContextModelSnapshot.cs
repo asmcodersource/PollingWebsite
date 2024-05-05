@@ -83,6 +83,9 @@ namespace PollingServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Access")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2048)
@@ -97,9 +100,6 @@ namespace PollingServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Visibility")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -338,7 +338,7 @@ namespace PollingServer.Migrations
             modelBuilder.Entity("PollingServer.Models.Poll.PollAllowedUsers", b =>
                 {
                     b.HasOne("PollingServer.Models.Poll.Poll", null)
-                        .WithMany("UsersEligibility")
+                        .WithMany("AllowedUsers")
                         .HasForeignKey("PollId");
 
                     b.HasOne("PollingServer.Models.User.User", "User")
@@ -379,11 +379,11 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
                 {
+                    b.Navigation("AllowedUsers");
+
                     b.Navigation("Answers");
 
                     b.Navigation("Questions");
-
-                    b.Navigation("UsersEligibility");
                 });
 
             modelBuilder.Entity("PollingServer.Models.User.User", b =>

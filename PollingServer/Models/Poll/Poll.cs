@@ -8,15 +8,16 @@ namespace PollingServer.Models.Poll
 {
     public enum PollingType
     {
-        Anonymous, // Only logged in users can access
-        NonAnonymous // Anyone can access 
+        Anyone, // Anyone can access 
+        Auhorized, // Only authorized can access
+        OnlyAllowed, // Only authorized and allowed can access 
+        OnlyOwner, // Only owner can access
     }
 
-    public enum PollingVisibility
+    public enum PollingAccess
     {
-        Public, // Can be shown somewhere on pages of website
+        Public, // Shown on pages
         Private, // Access only by link
-        Protected  // Only owner can access
     }
 
     public class Poll
@@ -38,8 +39,8 @@ namespace PollingServer.Models.Poll
 
         public ICollection<PollAnswers>? Answers { get; set; }
         public ICollection<PollQuestion>? Questions { get; set; }
-        public ICollection<PollAllowedUsers>? UsersEligibility { get; set; }
+        public ICollection<PollAllowedUsers>? AllowedUsers { get; set; }
         public PollingType Type { get; set; }
-        public PollingVisibility Visibility { get; set; }
+        public PollingAccess Access { get; set; }
     }
 }
