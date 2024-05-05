@@ -12,7 +12,7 @@ using PollingServer.Models;
 namespace PollingServer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240505142055_Initial")]
+    [Migration("20240505154136_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace PollingServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.SelectFieldResponse", b =>
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.AbstractAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,29 +33,26 @@ namespace PollingServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AnswerTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("SelectFieldQuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
+                    b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("PollAnswersId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SelectFieldQuestionId");
+                    b.HasIndex("PollAnswersId");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("AbstractAnswer");
 
-                    b.ToTable("SelectFieldResponse");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("AbstractAnswer");
+
+                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.TextFieldResponse", b =>
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.PollAnswers", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,11 +63,7 @@ namespace PollingServer.Migrations
                     b.Property<DateTime>("AnswerTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TextFieldQuestionId")
+                    b.Property<int?>("PollId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -78,11 +71,11 @@ namespace PollingServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TextFieldQuestionId");
+                    b.HasIndex("PollId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TextFieldResponse");
+                    b.ToTable("PollAnswers");
                 });
 
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
@@ -142,6 +135,28 @@ namespace PollingServer.Migrations
                     b.ToTable("PollAllowedUsers");
                 });
 
+            modelBuilder.Entity("PollingServer.Models.Poll.Question.AbstractQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AbstractQuestion");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("AbstractQuestion");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("PollingServer.Models.Poll.Question.PollQuestion", b =>
                 {
                     b.Property<int>("Id")
@@ -165,54 +180,16 @@ namespace PollingServer.Migrations
                     b.Property<int?>("PollId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SelectQuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TextQuestionId")
+                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PollId");
 
-                    b.HasIndex("SelectQuestionId");
-
-                    b.HasIndex("TextQuestionId");
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("PollQuestion");
-                });
-
-            modelBuilder.Entity("PollingServer.Models.Poll.Question.SelectFieldQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Options")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SelectFieldQuestion");
-                });
-
-            modelBuilder.Entity("PollingServer.Models.Poll.Question.TextFieldQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FieldPlaceholder")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TextFieldQuestion");
                 });
 
             modelBuilder.Entity("PollingServer.Models.User.User", b =>
@@ -276,26 +253,70 @@ namespace PollingServer.Migrations
                     b.ToTable("UserBan");
                 });
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.SelectFieldResponse", b =>
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.SelectAnswer", b =>
                 {
-                    b.HasOne("PollingServer.Models.Poll.Question.SelectFieldQuestion", null)
-                        .WithMany("Responses")
-                        .HasForeignKey("SelectFieldQuestionId");
+                    b.HasBaseType("PollingServer.Models.Poll.Answer.AbstractAnswer");
 
-                    b.HasOne("PollingServer.Models.User.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Navigation("User");
+                    b.HasDiscriminator().HasValue("SelectAnswer");
                 });
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.TextFieldResponse", b =>
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.TextFieldAnswer", b =>
                 {
-                    b.HasOne("PollingServer.Models.Poll.Question.TextFieldQuestion", null)
-                        .WithMany("Responses")
-                        .HasForeignKey("TextFieldQuestionId");
+                    b.HasBaseType("PollingServer.Models.Poll.Answer.AbstractAnswer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("AbstractAnswer", t =>
+                        {
+                            t.Property("Text")
+                                .HasColumnName("TextFieldAnswer_Text");
+                        });
+
+                    b.HasDiscriminator().HasValue("TextFieldAnswer");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.Question.SelectQuestion", b =>
+                {
+                    b.HasBaseType("PollingServer.Models.Poll.Question.AbstractQuestion");
+
+                    b.Property<string>("DefaultValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Options")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("SelectQuestion");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.Question.TextFieldQuestion", b =>
+                {
+                    b.HasBaseType("PollingServer.Models.Poll.Question.AbstractQuestion");
+
+                    b.Property<string>("FieldPlaceholder")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("TextFieldQuestion");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.AbstractAnswer", b =>
+                {
+                    b.HasOne("PollingServer.Models.Poll.Answer.PollAnswers", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("PollAnswersId");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.PollAnswers", b =>
+                {
+                    b.HasOne("PollingServer.Models.Poll.Poll", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("PollId");
 
                     b.HasOne("PollingServer.Models.User.User", "User")
                         .WithMany()
@@ -338,17 +359,13 @@ namespace PollingServer.Migrations
                         .WithMany("Questions")
                         .HasForeignKey("PollId");
 
-                    b.HasOne("PollingServer.Models.Poll.Question.SelectFieldQuestion", "SelectQuestion")
+                    b.HasOne("PollingServer.Models.Poll.Question.AbstractQuestion", "Question")
                         .WithMany()
-                        .HasForeignKey("SelectQuestionId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("PollingServer.Models.Poll.Question.TextFieldQuestion", "TextQuestion")
-                        .WithMany()
-                        .HasForeignKey("TextQuestionId");
-
-                    b.Navigation("SelectQuestion");
-
-                    b.Navigation("TextQuestion");
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("PollingServer.Models.User.UserBan", b =>
@@ -358,21 +375,18 @@ namespace PollingServer.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.PollAnswers", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
                 {
+                    b.Navigation("Answers");
+
                     b.Navigation("Questions");
 
                     b.Navigation("UsersEligibility");
-                });
-
-            modelBuilder.Entity("PollingServer.Models.Poll.Question.SelectFieldQuestion", b =>
-                {
-                    b.Navigation("Responses");
-                });
-
-            modelBuilder.Entity("PollingServer.Models.Poll.Question.TextFieldQuestion", b =>
-                {
-                    b.Navigation("Responses");
                 });
 
             modelBuilder.Entity("PollingServer.Models.User.User", b =>

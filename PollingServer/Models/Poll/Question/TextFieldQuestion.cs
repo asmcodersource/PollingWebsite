@@ -4,12 +4,10 @@ using PollingServer.Models.Poll.Answer;
 
 namespace PollingServer.Models.Poll.Question
 {
-    public class TextFieldQuestion : BaseQuestion
+    public class TextFieldQuestion : AbstractQuestion
     {
         [Required]
         public string FieldPlaceholder { get; set; } = string.Empty;
-
-        public ICollection<TextFieldResponse>? Responses { get; set; }
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PollingServer.Models.Poll.Question
 {
@@ -17,7 +18,7 @@ namespace PollingServer.Models.Poll.Question
         [Required]
         public int OrderRate { get; set; } = int.MinValue;
 
-        public SelectFieldQuestion? SelectQuestion { get; set; }
-        public TextFieldQuestion? TextQuestion { get; set; }
+        [Required, NotNull]
+        public AbstractQuestion? Question { get; set; }
     }
 }

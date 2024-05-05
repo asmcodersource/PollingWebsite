@@ -8,14 +8,15 @@ namespace PollingServer.Models.Poll
 {
     public enum PollingType
     {
-        Anonymous,
-        NonAnonymous
+        Anonymous, // Only logged in users can access
+        NonAnonymous // Anyone can access 
     }
 
     public enum PollingVisibility
     {
-        Public,
-        Private
+        Public, // Can be shown somewhere on pages of website
+        Private, // Access only by link
+        Protected  // Only owner can access
     }
 
     public class Poll
@@ -35,6 +36,7 @@ namespace PollingServer.Models.Poll
         [ForeignKey(nameof(OwnerId))]
         public User.User? Owner { get; set; }
 
+        public ICollection<PollAnswers>? Answers { get; set; }
         public ICollection<PollQuestion>? Questions { get; set; }
         public ICollection<PollAllowedUsers>? UsersEligibility { get; set; }
         public PollingType Type { get; set; }

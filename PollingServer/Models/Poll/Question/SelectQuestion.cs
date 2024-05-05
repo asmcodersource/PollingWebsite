@@ -2,9 +2,9 @@
 
 namespace PollingServer.Models.Poll.Question
 {
-    public class SelectFieldQuestion : BaseQuestion
+    public class SelectQuestion : AbstractQuestion
     {
+        public string? DefaultValue { get; set; }
         public ICollection<string>? Options { get; set; }
-        public ICollection<SelectFieldResponse>? Responses { get; set;}
     }
 }
