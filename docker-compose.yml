@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  pollingclient:
+    image: ${DOCKER_REGISTRY-}polling-client
+    networks:
+      - front-tier
+    build:
+      context: PollingClient/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  pollingserver:
+    image: ${DOCKER_REGISTRY-}polling-server
+    networks: 
+      - back-tier
+      - front-tier
+    build:
+      context: PollingServer/
+      dockerfile: Dockerfile
+
+  mssql-server:
+    image: mcr.microsoft.com/mssql/server
+    restart: always
+    networks:   
+      - back-tier
+    environment: 
+      MSSQL_SA_PASSWORD: "MSSQL_password_123"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    volumes:
+      - database-volume:/var/opt/mssql
+    ports:
+      - "1433:1433"
+
+
+networks:
+  back-tier:
+  front-tier:
+
+volumes:
+  database-volume:
