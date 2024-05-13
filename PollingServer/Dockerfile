@@ -22,4 +22,5 @@ RUN dotnet publish "./PollingServer.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN Update-Database
 ENTRYPOINT ["dotnet", "PollingServer.dll"]
