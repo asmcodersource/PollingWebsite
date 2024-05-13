@@ -1,0 +1,9 @@
+.quizzes-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: space-between;
+    gap: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;   
+}

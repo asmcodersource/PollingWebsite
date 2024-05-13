@@ -1,0 +1,44 @@
+.notification-wrapper {
+    border-radius: 3px;
+    min-width: 200px;
+    max-width: 350px;
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid rgba(0,0,0,0.3);
+}
+
+
+.notification-wrapper .title{
+    text-align: left;
+    float: left;
+    margin-bottom: 10px;
+}
+
+.notification-wrapper .message p {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.notification-wrapper .message *{
+    width: 100%;
+}
+
+.notification-wrapper .created-at {
+    display: inline-block;
+    float: right;
+}
+
+.created-at {
+    display: flex;
+    flex-direction: row;
+    justify-items: flex-end;
+    width: 50%;
+}
+
+.title {
+    width: 100%;
+}
+

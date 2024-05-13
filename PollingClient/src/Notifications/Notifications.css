@@ -1,0 +1,21 @@
+.notifications-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: space-between;
+    gap: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.notifications-wrapper .header{
+    text-align: left;
+    text-indent: 15px;
+    font-size: 14pt;
+    margin: 10px 0px;
+}
+
+.header-hr {
+    margin: 0px 0px !important;
+    text-align: left;
+}
