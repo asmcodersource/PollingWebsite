@@ -25,3 +25,11 @@ th, td {
 .width{
     height: 100px;
 }
+
+.absolute-center {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}

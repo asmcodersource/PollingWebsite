@@ -2,13 +2,13 @@
 {
     public static class BadResponseFactory
     {
-        public static object CreateErrorResponse(string type, string title, object[] errors, int code = 400)
+        public static object CreateErrorResponse(string type, string title, string[] errors, int code = 400)
         {
             return new
             {
                 type = type,
                 title = title,
-                errors = errors,
+                errors = new { error = errors },
                 code = code
             };
         }

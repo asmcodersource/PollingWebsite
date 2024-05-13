@@ -12,7 +12,7 @@ namespace PollingServer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AbstractQuestion",
+                name: "BaseQuestion",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,7 +24,22 @@ namespace PollingServer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AbstractQuestion", x => x.Id);
+                    table.PrimaryKey("PK_BaseQuestion", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bytes = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,6 +66,7 @@ namespace PollingServer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Access = table.Column<int>(type: "int", nullable: false)
@@ -58,6 +74,11 @@ namespace PollingServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Polls", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Polls_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Polls_Users_OwnerId",
                         column: x => x.OwnerId,
@@ -155,9 +176,9 @@ namespace PollingServer.Migrations
                 {
                     table.PrimaryKey("PK_PollQuestion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PollQuestion_AbstractQuestion_QuestionId",
+                        name: "FK_PollQuestion_BaseQuestion_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "AbstractQuestion",
+                        principalTable: "BaseQuestion",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -168,7 +189,7 @@ namespace PollingServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AbstractAnswer",
+                name: "BaseAnswer",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -180,17 +201,17 @@ namespace PollingServer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AbstractAnswer", x => x.Id);
+                    table.PrimaryKey("PK_BaseAnswer", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AbstractAnswer_PollAnswers_PollAnswersId",
+                        name: "FK_BaseAnswer_PollAnswers_PollAnswersId",
                         column: x => x.PollAnswersId,
                         principalTable: "PollAnswers",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AbstractAnswer_PollAnswersId",
-                table: "AbstractAnswer",
+                name: "IX_BaseAnswer_PollAnswersId",
+                table: "BaseAnswer",
                 column: "PollAnswersId");
 
             migrationBuilder.CreateIndex(
@@ -224,6 +245,11 @@ namespace PollingServer.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Polls_ImageId",
+                table: "Polls",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Polls_OwnerId",
                 table: "Polls",
                 column: "OwnerId");
@@ -238,7 +264,7 @@ namespace PollingServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AbstractAnswer");
+                name: "BaseAnswer");
 
             migrationBuilder.DropTable(
                 name: "PollAllowedUsers");
@@ -253,10 +279,13 @@ namespace PollingServer.Migrations
                 name: "PollAnswers");
 
             migrationBuilder.DropTable(
-                name: "AbstractQuestion");
+                name: "BaseQuestion");
 
             migrationBuilder.DropTable(
                 name: "Polls");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Users");

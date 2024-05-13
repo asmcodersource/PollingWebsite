@@ -4,7 +4,7 @@ using PollingServer.Models.Poll.Answer;
 
 namespace PollingServer.Models.Poll.Question
 {
-    public class TextFieldQuestion : AbstractQuestion
+    public class TextFieldQuestion : BaseQuestion
     {
         [Required]
         public string FieldPlaceholder { get; set; } = string.Empty;

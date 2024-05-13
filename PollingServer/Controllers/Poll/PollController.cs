@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PollingServer.Controllers.Poll;
 using PollingServer.Models;
+using PollingServer.Models.Poll;
 using PollingServer.Models.Poll.Answer;
 using PollingServer.Models.Poll.Question;
 using System.Security.Claims;
@@ -189,6 +190,33 @@ namespace PollingServer.Controllers.Polls
             databaseContext.Polls.Remove(poll);
             databaseContext.SaveChanges();
             return StatusCode(StatusCodes.Status200OK);
+        }
+
+        [HttpGet]
+        [Route("{pollId}/image")]
+        public IActionResult GetImage(int pollId)
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+                user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+            Models.Poll.Poll? poll = databaseContext.Polls.Find(pollId);
+            if (poll is null)
+                return StatusCode(StatusCodes.Status404NotFound);
+            // Ensure that user has access to this poll
+            if (IsUserHasAccessToPoll(poll, user) is not true)
+                return StatusCode(StatusCodes.Status403Forbidden);
+            if( poll.Image is not null  )
+                return base.File(poll.Image.Bytes, poll.Image.ContentType);
+            else 
+                return base.NoContent();
+        }
+
+        [HttpPost]
+        [Route("image")]
+        public IActionResult GetImage()
+        {
+            return base.Problem("not implemented yet");
         }
 
         [NonAction]

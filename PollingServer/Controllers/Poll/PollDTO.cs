@@ -18,6 +18,8 @@ namespace PollingServer.Controllers.Poll
         [Required, MaxLength(2048)]
         public string Description { get; set; } = string.Empty;
 
+        public int? ImageId { get; set; } = null; 
+
         [Required]
         public int OwnerId { get; set; }
 
@@ -32,6 +34,7 @@ namespace PollingServer.Controllers.Poll
             Access = poll.Access;
             Type = poll.Type;
             OwnerId = poll.OwnerId;
+            ImageId = poll.Id;
         }
     }
 }

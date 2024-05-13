@@ -12,7 +12,7 @@ using PollingServer.Models;
 namespace PollingServer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240505194031_Initial")]
+    [Migration("20240513115836_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,31 @@ namespace PollingServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.AbstractAnswer", b =>
+            modelBuilder.Entity("PollingServer.Models.Image.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Bytes")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.BaseAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,9 +69,9 @@ namespace PollingServer.Migrations
 
                     b.HasIndex("PollAnswersId");
 
-                    b.ToTable("AbstractAnswer");
+                    b.ToTable("BaseAnswer");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("AbstractAnswer");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseAnswer");
 
                     b.UseTphMappingStrategy();
                 });
@@ -94,6 +118,9 @@ namespace PollingServer.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
 
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -106,6 +133,8 @@ namespace PollingServer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId");
 
                     b.HasIndex("OwnerId");
 
@@ -135,7 +164,7 @@ namespace PollingServer.Migrations
                     b.ToTable("PollAllowedUsers");
                 });
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Question.AbstractQuestion", b =>
+            modelBuilder.Entity("PollingServer.Models.Poll.Question.BaseQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,9 +179,9 @@ namespace PollingServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AbstractQuestion");
+                    b.ToTable("BaseQuestion");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("AbstractQuestion");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseQuestion");
 
                     b.UseTphMappingStrategy();
                 });
@@ -255,7 +284,7 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Answer.SelectAnswer", b =>
                 {
-                    b.HasBaseType("PollingServer.Models.Poll.Answer.AbstractAnswer");
+                    b.HasBaseType("PollingServer.Models.Poll.Answer.BaseAnswer");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -266,13 +295,13 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Answer.TextFieldAnswer", b =>
                 {
-                    b.HasBaseType("PollingServer.Models.Poll.Answer.AbstractAnswer");
+                    b.HasBaseType("PollingServer.Models.Poll.Answer.BaseAnswer");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("AbstractAnswer", t =>
+                    b.ToTable("BaseAnswer", t =>
                         {
                             t.Property("Text")
                                 .HasColumnName("TextFieldAnswer_Text");
@@ -283,7 +312,7 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Question.SelectQuestion", b =>
                 {
-                    b.HasBaseType("PollingServer.Models.Poll.Question.AbstractQuestion");
+                    b.HasBaseType("PollingServer.Models.Poll.Question.BaseQuestion");
 
                     b.Property<string>("DefaultValue")
                         .HasColumnType("nvarchar(max)");
@@ -296,7 +325,7 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Question.TextFieldQuestion", b =>
                 {
-                    b.HasBaseType("PollingServer.Models.Poll.Question.AbstractQuestion");
+                    b.HasBaseType("PollingServer.Models.Poll.Question.BaseQuestion");
 
                     b.Property<string>("FieldPlaceholder")
                         .IsRequired()
@@ -305,7 +334,7 @@ namespace PollingServer.Migrations
                     b.HasDiscriminator().HasValue("TextFieldQuestion");
                 });
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.AbstractAnswer", b =>
+            modelBuilder.Entity("PollingServer.Models.Poll.Answer.BaseAnswer", b =>
                 {
                     b.HasOne("PollingServer.Models.Poll.Answer.PollAnswers", null)
                         .WithMany("Answers")
@@ -329,11 +358,17 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
                 {
+                    b.HasOne("PollingServer.Models.Image.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId");
+
                     b.HasOne("PollingServer.Models.User.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Image");
 
                     b.Navigation("Owner");
                 });
@@ -359,7 +394,7 @@ namespace PollingServer.Migrations
                         .WithMany("Questions")
                         .HasForeignKey("PollId");
 
-                    b.HasOne("PollingServer.Models.Poll.Question.AbstractQuestion", "Question")
+                    b.HasOne("PollingServer.Models.Poll.Question.BaseQuestion", "Question")
                         .WithMany()
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)

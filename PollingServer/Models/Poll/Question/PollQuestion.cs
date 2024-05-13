@@ -19,6 +19,6 @@ namespace PollingServer.Models.Poll.Question
         public int OrderRate { get; set; } = int.MinValue;
 
         [Required, NotNull]
-        public AbstractQuestion? Question { get; set; }
+        public BaseQuestion? Question { get; set; }
     }
 }

@@ -20,9 +20,9 @@ const Quizzes = (props) => {
 
     return (
         <Container className="quizzes-wrapper">
-        {quizzes.map((quiz) =>
+        {quizzes.map((quiz, index) =>
             (<>
-                < Quiz {...quiz}/>
+                < Quiz key={index} {...quiz}/>
             </>)
         )}
         </Container>

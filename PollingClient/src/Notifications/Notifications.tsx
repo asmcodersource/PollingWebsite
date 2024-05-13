@@ -20,7 +20,7 @@ const Notifications = (props) => {
         <Container className="notifications-wrapper">
             {notifications.map((notification, index) => (
                 <>
-                    <Notification {...notification} />
+                    <Notification key={index} {...notification} />
                 </>
             ))}
         </Container>

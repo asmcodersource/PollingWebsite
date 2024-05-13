@@ -44,9 +44,8 @@ namespace PollingServer.Controllers.Authorization
                     return BadRequest(BadResponseFactory.CreateErrorResponse(
                         "custom-error", 
                         "Authorization error", 
-                        new[] { 
-                            new { error = "Wrong login or password" } 
-                        })
+                        new []{ "Wrong login or password" }
+                        )
                     );
                 var jwt = CreateJsonWebToken(user);
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
@@ -56,8 +55,8 @@ namespace PollingServer.Controllers.Authorization
                 return BadRequest(BadResponseFactory.CreateErrorResponse(
                     "custom-error",
                     "Authorization error",
-                    new[] {
-                        new { error = "Wrong login or password" }
+                    new[] { 
+                        "Wrong login or password"
                     })
                 );
             }
@@ -79,9 +78,8 @@ namespace PollingServer.Controllers.Authorization
                 return BadRequest(BadResponseFactory.CreateErrorResponse(
                         "custom-error",
                         "Authorization error",
-                        new[] {
-                            new { error = "Username or email is already used" }
-                        })
+                        new[] { "Username or email is already used" }
+                        )
                     );
             }
             // Create user entity and store it to database context

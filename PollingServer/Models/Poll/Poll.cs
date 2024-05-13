@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using PollingServer.Models.User;
+using PollingServer.Models.Image;
 using PollingServer.Models.Poll.Question;
 using PollingServer.Models.Poll.Answer;
 
@@ -31,8 +32,11 @@ namespace PollingServer.Models.Poll
         [Required, MaxLength(2048)]
         public string Description { get; set; } = string.Empty;
 
+        public Image.Image? Image { get; set; }
+
         [Required]
         public int OwnerId { get; set; }
+
 
         [ForeignKey(nameof(OwnerId))]
         public User.User? Owner { get; set; }

@@ -18,7 +18,7 @@ namespace PollingServer.Controllers.Poll
         public DateTime AnswerTime { get; set; } = DateTime.UtcNow;
 
         [Required, NotNull]
-        public ICollection<AbstractAnswer>? Answers { get; set; }
+        public ICollection<BaseAnswer>? Answers { get; set; }
 
         public PollAnswersDTO(Models.Poll.Answer.PollAnswers  pollAnswers)
         {
