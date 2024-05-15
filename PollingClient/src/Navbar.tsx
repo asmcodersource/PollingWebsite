@@ -13,7 +13,7 @@ export interface NavbarLink {
     
 const Navbar = (props: any) => {
     return (
-        <ReactNavbar  collapseOnSelect fixed="top" sticky="top" bg="dark" data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
+        <ReactNavbar collapseOnSelect sticky="top" bg="dark" data-bs-theme="dark" expand="lg" className="bg-body-tertiary" >
             <Container>
                     <ReactNavbar.Brand href="#home">{props.brand}</ReactNavbar.Brand>
                     <ReactNavbar.Toggle aria-controls="basic-navbar-nav" />

@@ -148,6 +148,23 @@ namespace PollingServer.Controllers.Polls
             return Json(pollDTO);
         }
 
+
+        [HttpGet]
+        [Authorize]
+        [ProducesResponseType(typeof(ICollection<PollDTO>), 200)]
+        public IActionResult GetPolls()
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+            {
+                user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+                var polls = databaseContext.Polls.Where((poll) => poll.OwnerId == user.Id).Select((poll) => new PollDTO(poll));
+                return Json(polls.ToList());
+            }
+            return base.StatusCode(StatusCodes.Status400BadRequest);
+        }
+
         [HttpPut]
         [Authorize]
         [ProducesResponseType(typeof(PollDTO), 200)]
@@ -162,7 +179,7 @@ namespace PollingServer.Controllers.Polls
             var user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(id));
             var poll = new Models.Poll.Poll
             {
-                Name = pollCreateModel.Name,
+                Title = pollCreateModel.Name,
                 Description = pollCreateModel.Description,
                 Owner = user,
                 OwnerId = Convert.ToInt32(id),

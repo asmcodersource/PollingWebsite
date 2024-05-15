@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, createRef } from 'react';
 import Stack from 'react-bootstrap/Stack';
 import Spinner from 'react-bootstrap/Spinner';
-import Navbar from './Navbar';
+import Navbar, { NavbarLink } from './Navbar';
 import Home from './Home/Home'
 import Quizzes from './Quizzes/Quizzes';
 import Notifications from './Notifications/Notifications';
@@ -13,7 +13,7 @@ import './App.css';
 function App() {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
-    const [workspace, setWorkspace] = useState<JSX.Element>(<Notifications />);
+    const [workspace, setWorkspace] = useState<JSX.Element>(<Home />);
     const loginRef = useRef();
 
     const loggedInLinks: NavbarLink[] = [
@@ -47,15 +47,6 @@ function App() {
         },
     ];
 
-    useEffect(() => {
-        if (sessionStorage.getItem("token") === null) {
-            setLoading(false);
-            setLoggedIn(false);
-            return;
-        }
-
-    }, [])
-
     const loggedOutLinks: NavbarLink[] = [
         {
             id: 1,
@@ -71,6 +62,45 @@ function App() {
         },
     ];
 
+    useEffect(() => {
+        if (sessionStorage.getItem("token") === null) {
+            setLoading(false);
+            setLoggedIn(false);
+            return;
+        } 
+        const tokenValidation = new Promise(async (resolve, reject) => {
+            let response : Response | null = null;
+            try {
+                response = await fetch("api/authorization/tokenvalidation", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + sessionStorage.getItem('token')
+                    },
+                });
+                if (response.status == 200 )
+                    resolve(response);
+                else
+                    reject(response);
+            } catch {
+                reject(response);
+            }
+        });
+        tokenValidation.then(
+            () => {
+                setLoading(false);
+                setLoggedIn(true);
+            },
+            () => {
+                setLoading(false);
+                setLoggedIn(false);
+            }
+        ).finally(
+            () => setWorkspace(<Home />)
+        );
+    }, [])
+
     return (
         <>
             {isLoading ?
@@ -79,11 +109,12 @@ function App() {
                 </div>
                 :
                 <>
+                    <Navbar
+                        brand="QuizApp"
+                        links={isLoggedIn ? loggedInLinks : loggedOutLinks}
+                    />
                     <Stack>
-                        <Navbar
-                            brand="QuizApp"
-                            links={isLoggedIn ? loggedInLinks : loggedOutLinks}
-                        />
+                        
                     </Stack>
                     {workspace}
                     <Login ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); } } />

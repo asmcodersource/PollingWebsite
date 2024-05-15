@@ -3,8 +3,32 @@ import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
-import Placeholder from 'react-bootstrap/Placeholder'
+import Placeholder from 'react-bootstrap/Placeholder';
+import PlaceholderImage from "./quiz-placeholder.jpg"; 
 import "./Quiz.css";
+
+
+export interface QuizDescriptor {
+    id: number,
+    title: string,
+    description: string,
+    createdAt: string,
+    img: object,
+
+};
+
+function formateDateTime(dateStr: string): string {
+    const date = new Date(dateStr);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 const Quiz = (props) => {
     let isLoaded: boolean = false;
@@ -27,9 +51,9 @@ const Quiz = (props) => {
                     <Spinner variant="secondary" animation="border" />
                 </Container>
             ) : (
-                <Card.Img variant="top" src={props.img} />
+                <img src={props.img != null ? props.img : PlaceholderImage} />
             )}
-            <Card.Body> 
+            <Card.Body>     
                 <Card.Text className="quiz-description">
                     {!isLoaded ? (
                         <Placeholder as={Card.Text} animation="glow">
@@ -40,16 +64,16 @@ const Quiz = (props) => {
                     ) : (
                         props.description
                     )}
-                    <span className="created-at .text-secondary">
-                        {!isLoaded ? (
-                            <Placeholder animation="glow">
-                                <Placeholder className='date' xs={6} /> <Placeholder className='time' xs={4} />{' '}
-                            </Placeholder>
-                        ) : (
-                            <>{props.dateTime}</>
-                        )}
-                    </span>
                 </Card.Text>
+                <span className="created-at text-secondary">
+                    {!isLoaded ? (
+                        <Placeholder animation="glow">
+                            <Placeholder className='date' xs={6} /> <Placeholder className='time' xs={4} />{' '}
+                        </Placeholder>
+                    ) : (
+                        formateDateTime(props.createdAt)
+                    )}
+                </span>
             </Card.Body>
         </Card>
     )

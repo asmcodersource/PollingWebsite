@@ -12,11 +12,11 @@ namespace PollingServer.Models.Image
 
         [MaybeNull]
         public string? Name { get; set; }
-        
-        [Required, NotNull]
-        public string ContentType { get; set; }
 
         [Required, NotNull]
-        public byte[] Bytes { get; set; }
+        public string ContentType { get; set; } = null!;
+
+        [Required, NotNull]
+        public byte[] Bytes { get; set; } = null!;
     }
 }

@@ -4,6 +4,7 @@ using PollingServer.Models.Poll;
 using PollingServer.Models.User;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using PollingServer.Models.Image;
 
 namespace PollingServer.Controllers.Poll
 {
@@ -13,12 +14,14 @@ namespace PollingServer.Controllers.Poll
         public int Id { get; set; }
 
         [Required, MinLength(6), MaxLength(255)]
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
 
         [Required, MaxLength(2048)]
         public string Description { get; set; } = string.Empty;
 
-        public int? ImageId { get; set; } = null; 
+        public Image? Image { get; set; } = null;
+
+        public DateTime CreatedAt { get; set; }
 
         [Required]
         public int OwnerId { get; set; }
@@ -29,12 +32,13 @@ namespace PollingServer.Controllers.Poll
         public PollDTO(Models.Poll.Poll poll)
         {
             Id = poll.Id;
-            Name = poll.Name;
+            Title = poll.Title;
             Description = poll.Description;
             Access = poll.Access;
             Type = poll.Type;
             OwnerId = poll.OwnerId;
-            ImageId = poll.Id;
+            Image = poll.Image;
+            CreatedAt = poll.CreatedAt;
         }
     }
 }

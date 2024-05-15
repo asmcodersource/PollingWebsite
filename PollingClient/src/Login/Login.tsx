@@ -48,12 +48,12 @@ class Login extends Component
             })
         });
         if (response.ok === true) {
-            let access_token = await response.text();
-            sessionStorage.setItem('token', access_token);
+            let responseJson = await response.json();
+            sessionStorage.setItem('token', responseJson['token']);
             this.setState(prevState => ({
                 isWaiting: false,
             }));
-                        this.setShow(false);
+            this.setShow(false);
             this.props.loggedIn();
         } else {
             let responseBody = await response.json();

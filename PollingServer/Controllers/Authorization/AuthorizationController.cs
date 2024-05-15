@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PollingServer.Controllers.Poll;
 using PollingServer.Models;
 using PollingServer.Models.User;
 using System.IdentityModel.Tokens.Jwt;
@@ -28,6 +29,20 @@ namespace PollingServer.Controllers.Authorization
         }
 
         [HttpPost]
+        [Route("tokenvalidation")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        public IActionResult TokenValidation()
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+                return base.StatusCode(StatusCodes.Status200OK);
+            else
+                return base.StatusCode(StatusCodes.Status401Unauthorized);
+        }
+
+        [HttpPost]
         [Route("authorize")]
         public IActionResult Authorize([FromBody] AuthorizationRequestModel model )
         {
@@ -49,7 +64,7 @@ namespace PollingServer.Controllers.Authorization
                     );
                 var jwt = CreateJsonWebToken(user);
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-                return Json(encodedJwt);
+                return Json(new { token = encodedJwt });
             } catch(InvalidOperationException exception)
             {
                 return BadRequest(BadResponseFactory.CreateErrorResponse(
@@ -93,7 +108,7 @@ namespace PollingServer.Controllers.Authorization
             databaseContext.SaveChanges();
             var jwt = CreateJsonWebToken(createdUser);
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            return Json(encodedJwt);
+            return Json(new { token = encodedJwt });
         }
 
         [NonAction]
