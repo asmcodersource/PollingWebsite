@@ -1,0 +1,24 @@
+.questions-wrapper{
+    padding: 5px 5px;
+}
+
+
+.questions-wrapper .editor-buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.add-question-button {
+    margin-top: 10px;
+    border-radius: 0px;
+    font-size: 11pt;
+    padding: 5px 0px;
+    width: 100%;
+    background-color: rgb(61,139,253);
+    box-shadow: -5px 7px rgb(190,190,190);
+    border: 1px solid rgba(0,0,0,0);
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    font-weight: 600;
+    float: right;
+}

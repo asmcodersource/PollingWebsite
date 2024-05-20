@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
+using PollingServer.Models.Poll.Question;
 
 namespace PollingServer.Models.Poll.Answer
 {
@@ -8,6 +10,7 @@ namespace PollingServer.Models.Poll.Answer
     {
         [Required, Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
 
         [Required]
         public int UserId { get; set; }
@@ -19,7 +22,7 @@ namespace PollingServer.Models.Poll.Answer
         public DateTime AnswerTime { get; set; } = DateTime.UtcNow;
 
         [Required, NotNull]
-        public ICollection<BaseAnswer>? Answers { get; set; }
+        public ICollection<BaseAnswer>? BaseAnswers { get; set; }
 
     }
 }

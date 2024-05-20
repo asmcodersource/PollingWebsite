@@ -20,6 +20,11 @@
     color: black;
 }
 
+.login-wrapper input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px lightyellow inset;
+    -webkit-text-fill-color: #000;
+}
+
 .login-wrapper input:focus {
     font-weight: 600;
 }

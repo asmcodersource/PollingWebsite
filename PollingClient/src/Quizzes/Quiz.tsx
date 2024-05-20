@@ -36,7 +36,7 @@ const Quiz = (props) => {
         isLoaded = true;
 
     return (
-        <Card className="quiz-wrapper">
+        <Card className="quiz-wrapper" onClick={() => props.onClick(props)}>
             <Card.Title className="quiz-title">
                 {!isLoaded ? (
                     <Placeholder as={Card.Text} animation="glow">

@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using PollingServer.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 
 
@@ -57,6 +59,12 @@ builder.Services.AddSwaggerGen(option =>
 });
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = scope.ServiceProvider.GetService<DatabaseContext>();
+    context?.SeedData();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

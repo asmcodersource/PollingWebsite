@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\Home\" />
-    <Folder Include="src\Quizzes\" />
     <Folder Include="src\Notifications\" />
   </ItemGroup>
 </Project>

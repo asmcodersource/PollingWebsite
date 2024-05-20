@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
+import QuizManager from './QuizManager/QuizManager.tsx'
 import Quiz, { QuizDescriptor } from './Quiz.tsx';
 import './Quizzes.css'
+import { BaseQuestion } from './Questions/QuizQuestion.tsx';
 
 
 const placeholderQuizzes = [
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
+    { id: 1 },
+    { id: 2 },
+    { id: 3 },
+    { id: 4 },
+    { id: 5 },
+    { id: 6 },
+    { id: 7 },
+    { id: 8 },
 ]
 
 function mapQuizDTO(quizDTO : any): QuizDescriptor {
@@ -22,6 +24,7 @@ function mapQuizDTO(quizDTO : any): QuizDescriptor {
 }
 
 const Quizzes = (props) => {
+    const [dialog, setDialog] = useState(null);
     const [quizzes, setQuizzes] = useState(placeholderQuizzes);
 
     useEffect(() => {
@@ -58,13 +61,23 @@ const Quizzes = (props) => {
     }, [])
 
     return (
-        <Container className="quizzes-wrapper">
-            {quizzes.map((quiz, index) =>
+        <>
+            <Container className="quizzes-wrapper">
+                {quizzes.map((quiz, index) =>
                 (<>
-                    < Quiz key={index} {...quiz}/>
-                </>)
-            )}
-        </Container>
+                    < Quiz key={quiz.id} {...quiz} onClick={(quiz) => {
+                        setDialog(<QuizManager
+                            key={-quiz.id}
+                            quiz={quiz}
+                            show={true}
+                            hideDialog={() => setDialog(<QuizManager key={-quiz.id} quiz={quiz} show={false} />)} />
+                        );
+                    }} />
+                    </>)
+                )}
+            </Container>
+            {dialog}
+        </>
     );
 }
 

@@ -1,0 +1,28 @@
+.quiz-question-admin-wrapper{
+
+}
+
+.quiz-question-admin-wrapper .buttons-wrapper {
+    border-radius: 0px 0px 0px 0px;
+    overflow: hidden;
+    width: fit-content;
+    float: right;
+    box-shadow: -5px 5px 0px 0px rgba(190,190,190,1);
+}
+
+.quiz-question-admin-wrapper .admin-question-wrapper {
+    box-sizing: border-box;
+    padding: 15px 7px;
+    border: 1px solid #a1a1a1;
+    border-radius: 0px 0px 0px 0px;
+    box-shadow: -5px 5px 0px 0px rgba(190,190,190,1);
+}
+
+.quiz-question-admin-wrapper button {
+    background-color: rgba(61,139,253, 1);
+    border: 1px solid rgba(61,139,253, 1);
+    box-sizing: border-box;
+    border-radius: 0px;
+    font-size: 10pt;
+    float: right;
+}

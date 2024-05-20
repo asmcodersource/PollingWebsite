@@ -43,9 +43,9 @@ namespace PollingServer.Models.Poll
         [ForeignKey(nameof(OwnerId))]
         public User.User? Owner { get; set; }
 
-        public ICollection<PollAnswers>? Answers { get; set; }
-        public ICollection<PollQuestion>? Questions { get; set; }
-        public ICollection<PollAllowedUsers>? AllowedUsers { get; set; }
+        public virtual ICollection<PollAnswers>? Answers { get; set; }
+        public virtual ICollection<BaseQuestion>? Questions { get; set; }
+        public virtual ICollection<PollAllowedUsers>? AllowedUsers { get; set; }
         public PollingType Type { get; set; }
         public PollingAccess Access { get; set; }
     }

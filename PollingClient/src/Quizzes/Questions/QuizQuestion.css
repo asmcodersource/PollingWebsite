@@ -1,0 +1,38 @@
+.question-wrapper label {
+    color: #212121;
+    font-weight: 600;
+    padding: 0px;
+}
+
+.question-wrapper input {
+    background-color: rgba(0,0,0,0);
+    border: 0px solid rgba(0,0,0,0);
+    border-bottom: 1px solid #3d97ff;
+    width: 100%;
+    outline: none;
+    color: black;
+    box-sizing: border-box;
+    outline: 0px;
+    margin-top: 5px;
+    padding: 3px 5px;
+}
+
+.text-field-question-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.select-question-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.select-question-wrapper select {
+    margin-top: 5px;
+    padding: 3px 10px;
+    color: #636363;
+    border-radius: 0px;
+    border: 1px solid #3d97ff;
+    background-color: #fcfcfc;
+    outline: 0px;
+}

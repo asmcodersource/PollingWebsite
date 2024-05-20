@@ -25,7 +25,7 @@ namespace PollingServer.Controllers.Poll
             Id = pollAnswers.Id;
             UserId = pollAnswers.UserId;
             AnswerTime = pollAnswers.AnswerTime;
-            Answers = pollAnswers.Answers;
+            Answers = pollAnswers.BaseAnswers;
         }
     }
 }
