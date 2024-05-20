@@ -1,6 +1,6 @@
 ﻿using PollingServer.Models.Poll;
 
-namespace PollingServer.Controllers.Poll
+namespace PollingServer.Controllers.Poll.DTOs
 {
     public class PollCreateModel
     {

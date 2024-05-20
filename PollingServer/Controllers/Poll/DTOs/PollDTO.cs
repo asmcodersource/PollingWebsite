@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using PollingServer.Models.Image;
 
-namespace PollingServer.Controllers.Poll
+namespace PollingServer.Controllers.Poll.DTOs
 {
     public class PollDTO
     {

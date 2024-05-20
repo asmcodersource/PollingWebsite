@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PollingServer.Controllers.Poll;
+using PollingServer.Controllers.Poll.DTOs;
 using PollingServer.Models;
 using PollingServer.Models.Poll;
 using PollingServer.Models.Poll.Answer;
 using PollingServer.Models.Poll.Question;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 
 namespace PollingServer.Controllers.Polls
 {
@@ -20,6 +22,139 @@ namespace PollingServer.Controllers.Polls
         {
             this.databaseContext = databaseContext;
         }
+
+
+        //
+        //          QUESTIONS
+        //
+
+
+        [HttpDelete]
+        [Authorize]
+        [Route("{pollId}/question/{questionId}")]
+        public IActionResult DeletePollQuestion(int pollId, int questionId)
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+                user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Questions!)
+                .FirstOrDefault();
+
+            if (poll is null)
+                return StatusCode(StatusCodes.Status404NotFound);
+            // Ensure that user has access to this poll
+            if (IsUserHasAccessToPoll(poll, user) is not true)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
+            var question = poll.Questions.Where((q) => q.Id == questionId).FirstOrDefault();
+            if( question is null )
+                return StatusCode(StatusCodes.Status404NotFound);
+
+            poll.Questions.Remove(question);
+            databaseContext.Polls.Update(poll);
+            databaseContext.SaveChanges();
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("{pollId}/question/{questionId}")]
+        public IActionResult UpdatePollQuestion(int pollId, int questionId, [FromBody] BaseQuestion question)
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+                user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+            databaseContext.ChangeTracker.LazyLoadingEnabled = false;
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Questions!)
+                .FirstOrDefault();
+
+            if (poll is null)
+                return StatusCode(StatusCodes.Status404NotFound);
+            // Ensure that user has access to this poll
+            if (IsUserHasAccessToPoll(poll, user) is not true)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
+            using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {
+                var bodyString = reader.ReadToEnd();
+                var json= JsonSerializer.SerializeToElement(bodyString);
+                var parsedQuestion = BaseQuestion.ParseJsonByDiscriminator(bodyString, json.GetProperty("discriminator").ToString());
+                var pollQuestion = poll.Questions.Where(q => q.Id == questionId).First();
+                poll.Questions.Remove(pollQuestion);
+                poll.Questions.Add(parsedQuestion);
+                databaseContext.Polls.Update(poll);
+                databaseContext.SaveChanges();
+                return StatusCode(StatusCodes.Status200OK);
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{pollId}/question")]
+        [ProducesResponseType(typeof(BaseQuestion), 200)]
+        public IActionResult CreatePollQuestion(int pollId, [FromBody] CreateQuestionDTO createQuestionDTO)
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+                user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+            databaseContext.ChangeTracker.LazyLoadingEnabled = false;
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Questions!)
+                .FirstOrDefault();
+
+            if (poll is null)
+                return StatusCode(StatusCodes.Status404NotFound);
+            // Ensure that user has access to this poll
+            if (IsUserHasAccessToPoll(poll, user) is not true)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
+            var createdQuestion = BaseQuestion.CreateByDiscriminator(createQuestionDTO.QuestionDiscriminator);
+            poll.Questions.Add(createdQuestion);
+            databaseContext.Polls.Update(poll);
+            databaseContext.SaveChanges();
+            return Json(createdQuestion);
+        }
+
+        [HttpGet]
+        [Route("{pollId}/questions/ordersupdate")]
+        public IActionResult GetPollQuestionsOrder(int pollId, [FromBody] List<QuestionOrderDTO> questionOrders)
+        {
+            Models.User.User? user = null;
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId is not null)
+                user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+            databaseContext.ChangeTracker.LazyLoadingEnabled = false;
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Questions!)
+                .FirstOrDefault();
+
+            if (poll is null)
+                return StatusCode(StatusCodes.Status404NotFound);
+            // Ensure that user has access to this poll
+            if (IsUserHasAccessToPoll(poll, user) is not true)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
+            foreach( var order in questionOrders)
+            {
+                var question = poll.Questions.FirstOrDefault((q) => q.Id == order.QuestionId);
+                if( question is not null )
+                    question.OrderRate = order.OrderRate;
+            }
+
+            databaseContext.Polls.Update(poll);
+            databaseContext.SaveChanges();
+            return Json(poll.Questions);
+        }
+
 
         [HttpGet]
         [Route("{pollId}/questions")]
@@ -45,6 +180,12 @@ namespace PollingServer.Controllers.Polls
 
             return Json(poll.Questions);
         }
+
+
+        //
+        //          ANSWERS
+        //
+
 
         [Authorize]
         [HttpGet]
@@ -136,6 +277,14 @@ namespace PollingServer.Controllers.Polls
         }
 
 
+
+
+        //
+        //          INDEX
+        //
+
+
+
         [HttpGet]
         [Route("{pollId}")]
         [ProducesResponseType(typeof(PollDTO), 200)]
@@ -215,6 +364,12 @@ namespace PollingServer.Controllers.Polls
             databaseContext.SaveChanges();
             return StatusCode(StatusCodes.Status200OK);
         }
+
+
+        //
+        //          IMAGES
+        //
+
 
         [HttpGet]
         [Route("{pollId}/image")]

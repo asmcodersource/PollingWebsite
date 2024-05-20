@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace PollingServer.Models.Poll.Question
@@ -23,8 +24,26 @@ namespace PollingServer.Models.Poll.Question
         public string? Description { get; set; } = string.Empty;
 
         [Required]
-        public int OrderRate { get; set; } = int.MinValue;
+        public int OrderRate { get; set; } = int.MaxValue;
 
         public string Discriminator { get; private set; }
+
+
+        public static BaseQuestion ParseJsonByDiscriminator(string json, string discriminator)
+        {
+            var type = BaseQuestion.CreateByDiscriminator(discriminator).GetType();
+            var question = JsonSerializer.Deserialize(json, type) as BaseQuestion;
+            if (question is null)
+                throw new JsonException("Invalid object deserrialization");
+            return question;
+        }
+
+        public static BaseQuestion CreateByDiscriminator(string discriminator)
+            => discriminator switch
+            {
+                nameof(TextFieldQuestion) => new TextFieldQuestion(),
+                nameof(SelectQuestion) => new SelectQuestion(),
+                _ => throw new ArgumentException("Invalid discriminator value", nameof(discriminator))
+            };
     }
 }

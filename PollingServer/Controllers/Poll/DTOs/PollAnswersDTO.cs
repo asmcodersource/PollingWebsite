@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PollingServer.Controllers.Poll
+namespace PollingServer.Controllers.Poll.DTOs
 {
     public class PollAnswersDTO
     {
@@ -20,7 +20,7 @@ namespace PollingServer.Controllers.Poll
         [Required, NotNull]
         public ICollection<BaseAnswer>? Answers { get; set; }
 
-        public PollAnswersDTO(Models.Poll.Answer.PollAnswers  pollAnswers)
+        public PollAnswersDTO(PollAnswers pollAnswers)
         {
             Id = pollAnswers.Id;
             UserId = pollAnswers.UserId;
