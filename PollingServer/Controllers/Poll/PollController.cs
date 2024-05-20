@@ -8,6 +8,7 @@ using PollingServer.Models.Poll.Answer;
 using PollingServer.Models.Poll.Question;
 using System.Security.Claims;
 using System.Text;
+using PollingServer.Filters;
 using System.Text.Json;
 
 namespace PollingServer.Controllers.Polls
@@ -61,14 +62,14 @@ namespace PollingServer.Controllers.Polls
 
         [HttpPut]
         [Authorize]
-        [Route("{pollId}/question/{questionId}")]
-        public IActionResult UpdatePollQuestion(int pollId, int questionId, [FromBody] BaseQuestion question)
+        [ReadableBodyStream]
+        [Route("{pollId}/question")]
+        public IActionResult UpdatePollQuestion(int pollId, [FromBody] BaseQuestion question)
         {
             Models.User.User? user = null;
             var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
             if (userId is not null)
                 user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
-            databaseContext.ChangeTracker.LazyLoadingEnabled = false;
             var poll = databaseContext.Polls
                 .Where(p => p.Id == pollId)
                 .Include(p => p.Questions!)
@@ -80,13 +81,19 @@ namespace PollingServer.Controllers.Polls
             if (IsUserHasAccessToPoll(poll, user) is not true)
                 return StatusCode(StatusCodes.Status403Forbidden);
 
+            Request.Body.Seek(0, SeekOrigin.Begin);
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
-                var bodyString = reader.ReadToEnd();
-                var json= JsonSerializer.SerializeToElement(bodyString);
-                var parsedQuestion = BaseQuestion.ParseJsonByDiscriminator(bodyString, json.GetProperty("discriminator").ToString());
-                var pollQuestion = poll.Questions.Where(q => q.Id == questionId).First();
-                poll.Questions.Remove(pollQuestion);
+                var bodyString = reader.ReadToEndAsync().Result;
+                var parsedQuestion = BaseQuestion.ParseJsonByDiscriminator(bodyString, question.Discriminator);
+                var pollQuestion = poll.Questions.FirstOrDefault(q => q.Id == parsedQuestion.Id);
+
+                if (pollQuestion != null)
+                {
+                    databaseContext.Entry(pollQuestion).State = EntityState.Detached;
+                    poll.Questions.Remove(pollQuestion);
+                }
+
                 poll.Questions.Add(parsedQuestion);
                 databaseContext.Polls.Update(poll);
                 databaseContext.SaveChanges();

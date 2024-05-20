@@ -26,13 +26,15 @@ namespace PollingServer.Models.Poll.Question
         [Required]
         public int OrderRate { get; set; } = int.MaxValue;
 
-        public string Discriminator { get; private set; }
+        [Required]
+        public string Discriminator { get; set; }
 
 
         public static BaseQuestion ParseJsonByDiscriminator(string json, string discriminator)
         {
             var type = BaseQuestion.CreateByDiscriminator(discriminator).GetType();
-            var question = JsonSerializer.Deserialize(json, type) as BaseQuestion;
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var question = JsonSerializer.Deserialize(json, type, options) as BaseQuestion;
             if (question is null)
                 throw new JsonException("Invalid object deserrialization");
             return question;
