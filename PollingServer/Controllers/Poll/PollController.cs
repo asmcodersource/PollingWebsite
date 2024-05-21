@@ -124,13 +124,15 @@ namespace PollingServer.Controllers.Polls
                 return StatusCode(StatusCodes.Status403Forbidden);
 
             var createdQuestion = BaseQuestion.CreateByDiscriminator(createQuestionDTO.QuestionDiscriminator);
+            createdQuestion.Description = createQuestionDTO.QuestionDescription;
+            createdQuestion.FieldName = createQuestionDTO.QuestionName;
             poll.Questions.Add(createdQuestion);
             databaseContext.Polls.Update(poll);
             databaseContext.SaveChanges();
             return Json(createdQuestion);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("{pollId}/questions/ordersupdate")]
         public IActionResult GetPollQuestionsOrder(int pollId, [FromBody] List<QuestionOrderDTO> questionOrders)
         {

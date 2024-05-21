@@ -1,7 +1,15 @@
-.questions-wrapper{
-    padding: 5px 5px;
+item {
+    padding: 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
 }
 
+.questions-wrapper {
+    transition-property: all;
+    transition: all 3s;
+    padding: 5px 5px;
+}
 
 .questions-wrapper .editor-buttons-wrapper {
     display: flex;

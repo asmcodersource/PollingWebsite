@@ -124,7 +124,7 @@ namespace PollingServer.Controllers.Authorization
                 issuer: tokenSettings.Issuer,
                 audience: tokenSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
+                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(360)),
                 signingCredentials: new SigningCredentials(tokenSettings.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
             );
             return jwt;

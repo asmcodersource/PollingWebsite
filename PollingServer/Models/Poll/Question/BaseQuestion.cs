@@ -15,8 +15,6 @@ namespace PollingServer.Models.Poll.Question
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-
-
         [Required, MaxLength(255)]
         public string FieldName { get; set; } = string.Empty;
 

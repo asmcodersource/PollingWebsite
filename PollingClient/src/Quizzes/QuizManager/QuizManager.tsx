@@ -27,21 +27,25 @@ class QuizManager extends Component {
                     <Modal.Title>{this.props.quiz.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Tabs
-                        variant='pills'
-                        defaultActiveKey="home"
-                        className="mb-3"
-                    >
-                        <Tab eventKey="home" title="Settings">
-                            <QuizGeneralSettings quiz={this.props.quiz} />
-                        </Tab>
-                        <Tab eventKey="questions" title="Questions">
-                            <QuizQuestionsEditor quiz={this.props.quiz} />
-                        </Tab>
-                        <Tab eventKey="answers" title="Answers">
-                            Tab content for Profile
-                        </Tab>
-                    </Tabs>
+                    <div className="limiter-container-wrapper">
+                        <div className="limiter-container">
+                            <Tabs
+                                variant='pills'
+                                defaultActiveKey="home"
+                                className="mb-3"
+                            >
+                                <Tab eventKey="home" title="Settings">
+                                    <QuizGeneralSettings quiz={this.props.quiz} />
+                                </Tab>
+                                <Tab eventKey="questions" title="Questions">
+                                    <QuizQuestionsEditor quiz={this.props.quiz} />
+                                </Tab>
+                                <Tab eventKey="answers" title="Answers">
+                                    Tab content for Profile
+                                </Tab>
+                            </Tabs>
+                        </div>
+                    </div>
                 </Modal.Body>
             </Modal>
         )

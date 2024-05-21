@@ -13,7 +13,7 @@ const SelectQuestionComponent = (props : any) => {
         <div className="select-question-wrapper">
             <label>{questionProps.description}</label>
             <select>
-                {questionProps.options.map((option, index) => 
+                {questionProps.options?.map((option, index) => 
                     <option>{option}</option>
                 )}
             </select>

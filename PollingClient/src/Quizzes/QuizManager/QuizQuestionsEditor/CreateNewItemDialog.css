@@ -1,0 +1,85 @@
+.create-new-item-dialog{
+    width: auto;
+    box-sizing: border-box;
+}
+
+.create-new-item-dialog .body{
+    height: fit-content;
+    padding: 25px;
+}
+
+.create-new-item-dialog label {
+    color: #212121;
+    font-weight: 600;
+    padding: 0px;
+}
+
+.create-new-item-dialog input, .create-new-item-dialog select{
+    margin-bottom: 20px;
+}
+
+.create-new-item-dialog input {
+    background-color: rgba(0,0,0,0);
+    border: 0px solid rgba(0,0,0,0);
+    border-bottom: 1px solid #3d97ff;
+    width: 100%;
+    outline: none;
+    color: black;
+    box-sizing: border-box;
+    outline: 0px;
+}
+
+.create-new-item-dialog select {
+    padding: 5px 10px;
+    color: #636363;
+    border-radius: 0px;
+    border: 1px solid #3d97ff;
+    background-color: #fcfcfc;
+    outline: 0px;
+    width: 100%;
+}
+
+
+.create-new-item-dialog .buttons-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0px;
+    margin: 0px 0px;
+}
+
+
+.create-new-item-dialog .create {
+    margin-top: 15px;
+    width: 150px;
+    padding: 3px 20px;
+    height: auto;
+    border-radius: 0px;
+}
+.text-justify{
+    text-align: justify;
+}
+
+.error-box{
+    font-size: 10pt;
+    text-align: justify;
+    color: red;
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.limiter-container {
+    max-width: 700px;
+
+}
+
+.limiter-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    place-items: center;
+    height: 100%;
+    width: 100%;
+}

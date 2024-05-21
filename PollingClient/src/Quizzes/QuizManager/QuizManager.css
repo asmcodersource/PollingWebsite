@@ -1,3 +1,17 @@
 .tab-content{
     flex-grow: 1;
 }
+
+.limiter-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.limiter-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    place-items: center;
+    height: 100%;
+    width: 100%;
+}
