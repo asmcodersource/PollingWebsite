@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import Button from 'react-bootstrap/Button';
+import { putQuestionToServer } from './QuestionEditor'
 import { TextFieldQuestion } from '../../../Questions/TextFieldQuestion';
 
 
@@ -14,32 +15,13 @@ const TextFieldQuestionEditor = (props: any) => {
         }));
     };
 
-    async function save() {
+    props.saveButtonSignal.handler = save; // it saves his lexical envirement? I am so good... ( no I am not, wtf I am doing here? Anyway it works! Take your shit web development )
 
-        const questionsOrderRateUpdate = new Promise(async (resolve, reject) => {
-            let response: Response | null = null;
-            try {
-                response = await fetch(`/api/poll/${props.poll.id}/question`, {
-                    method: "PUT",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + sessionStorage.getItem('token')
-                    },
-                    body: JSON.stringify(
-                        { ...question }
-                    )
-                });
-                if (response.status == 200)
-                    resolve(response);
-                else
-                    reject(response);
-            } catch {
-                reject(response);
-            }
-        });
-        questionsOrderRateUpdate.then(
-            async (response: Response) => {
+    async function save() {
+        let sendQuestion = { ...question }
+        let sendQuestionToServer = putQuestionToServer(sendQuestion, props.poll.id);
+        sendQuestionToServer.then(
+            () => {
                 props.onHide();
                 props.onUpdate();
             },
@@ -87,9 +69,6 @@ const TextFieldQuestionEditor = (props: any) => {
             <p className="error">
                 {errorMsg}
             </p>
-            <div className="center editor-buttons-wrapper">
-                <Button variant="dark" onClick={save} className="add-question-button">Save</Button>
-            </div>
         </div>
     );
 };
