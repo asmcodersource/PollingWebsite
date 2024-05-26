@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PollingServer.Controllers.Authorization
+namespace PollingServer.Controllers.Authorization.DTOs
 {
-    public class AuthorizationRequestModel
+    public class AuthorizationRequestDTO
     {
         [Required(ErrorMessage = "Nickname is required")]
         [MaxLength(256, ErrorMessage = "Nickname must be at most 256 characters long")]

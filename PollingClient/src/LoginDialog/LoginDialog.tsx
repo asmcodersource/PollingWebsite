@@ -1,10 +1,10 @@
-import './Login.css'
+import './LoginDialog.css'
 import { Component, useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-class Login extends Component
+class LoginDialog extends Component
 {
     constructor(props: any) {
         super(props);
@@ -36,7 +36,7 @@ class Login extends Component
 
         let nickname = document.querySelector('.login-wrapper #nickname');
         let password = document.querySelector('.login-wrapper #password');
-        const response = await fetch("api/authorization/authorize", {
+        const response = await fetch("/api/authorization/authorize", {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -99,7 +99,11 @@ class Login extends Component
                                 <p className="text-secondary info">Your password must be provided, be between 6 and 2048 characters in length, and contain at least one letter and one number.</p>
                             </div>
                             <div className="bottom-wrapper">
+                                
                                 <div className="error-wrapper">
+                                    <p className="text-primary">
+                                        {this.props?.info}
+                                    </p>
                                     <p className="text-danger">
                                         {!this.state.isWaiting ?
                                             (this.state.errorMessage)
@@ -123,4 +127,26 @@ class Login extends Component
     }
 }
 
-export default Login;
+export default LoginDialog;
+
+
+export interface TokenValidationResponse {
+    id: number,
+    nickname: string
+}
+
+export async function verifyToken(): Promise<TokenValidationResponse> {
+    let response = await fetch("/api/authorization/tokenvalidation", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + sessionStorage.getItem('token')
+        },
+    });
+    if (response.ok) {
+        let tokenValidationResponse: TokenValidationResponse = await response.json();
+        return tokenValidationResponse;
+    }
+    throw 'Token validation exception';
+}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { putQuestionToServer } from './QuestionEditor'
-import { SelectQuestion } from '../../../Questions/SelectQuestion';
+import { SelectQuestion } from '../../../../../Questions/SelectQuestion';
 
 const SelectQuestionEditor = (props) => {
     const [errorMsg, setErrorMsg] = useState<string>();
@@ -81,7 +81,7 @@ const SelectQuestionEditor = (props) => {
                 onChange={(e) => questionPropertyChanged(e.target.value, "description")}
             >
             </input><br />
-            <label>Options</label><br />
+            <label>Options:</label><br />
             {options.map((option, index) =>
                 <input
                     className="select-option-input"

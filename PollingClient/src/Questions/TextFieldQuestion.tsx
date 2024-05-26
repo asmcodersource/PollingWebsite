@@ -11,7 +11,7 @@ const TextFieldQuestionComponent = (props: any) => {
 
     return (
         <div className="text-field-question-wrapper">
-            <label>{questionProps.description}</label>
+            <label className="description">{questionProps.description}</label>
             <input placeholder={questionProps.fieldPlaceholder}></input>
         </div>
     )

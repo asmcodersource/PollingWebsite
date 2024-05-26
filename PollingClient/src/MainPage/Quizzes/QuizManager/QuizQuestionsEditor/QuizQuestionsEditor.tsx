@@ -2,13 +2,13 @@ import CreateNewItemDialog from './CreateNewItemDialog'
 import FlipMove from 'react-flip-move';
 import QuestionEditor from './Editors/QuestionEditor'
 import './QuizQuestionsEditor.css'
-import '../../Questions/QuizQuestionAdminWrapper'
+import '../../../../Questions/QuizQuestionAdminWrapper'
 import { ReactNode, useEffect, useState } from 'react'
 import Stack from 'react-bootstrap/Stack'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
-import QuizQuestionAdminWrapper from '../../Questions/QuizQuestionAdminWrapper'
-import { BaseQuestion } from '../../Questions/QuizQuestion'
+import QuizQuestionAdminWrapper from '../../../../Questions/QuizQuestionAdminWrapper'
+import { BaseQuestion } from '../../../../Questions/QuizQuestion'
 
 
 interface QuestionOrderDTO {

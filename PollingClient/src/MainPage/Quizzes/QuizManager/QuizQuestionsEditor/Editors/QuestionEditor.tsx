@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import SelectQuestionEditor from './SelectQuestionEditor';
 import TextFieldQuestionEditor from './TextFieldQuestionEditor';
-import { BaseQuestion } from '../../../Questions/QuizQuestion';
+import { BaseQuestion } from '../../../../../Questions/QuizQuestion';
 
 
 export interface ExternalSignal {

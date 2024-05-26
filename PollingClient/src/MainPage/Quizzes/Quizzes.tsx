@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import QuizManager from './QuizManager/QuizManager.tsx'
-import Quiz, { QuizDescriptor } from './Quiz.tsx';
+import Quiz, { Poll } from './Quiz.tsx';
 import './Quizzes.css'
-import { BaseQuestion } from './Questions/QuizQuestion.tsx';
+import { BaseQuestion } from '../../Questions/QuizQuestion.tsx';
 
 
 const placeholderQuizzes = [
@@ -17,7 +17,7 @@ const placeholderQuizzes = [
     { id: 8 },
 ]
 
-function mapQuizDTO(quizDTO : any): QuizDescriptor {
+function mapQuizDTO(quizDTO : any): Poll {
     return {
         ...quizDTO,
     }

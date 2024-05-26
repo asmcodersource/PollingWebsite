@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import QuizQuestionsEditor from './QuizQuestionsEditor/QuizQuestionsEditor'
-import QuizGeneralSettings from './QuizGeneralSettings';
+import QuizGeneralSettings from './QuizSettingEditor/QuizGeneralSettings';
 
 
 

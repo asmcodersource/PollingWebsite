@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PollingServer.Controllers.Authorization.DTOs;
 using PollingServer.Controllers.Poll;
 using PollingServer.Models;
+using PollingServer.Models.Poll.Question;
 using PollingServer.Models.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -30,21 +32,22 @@ namespace PollingServer.Controllers.Authorization
 
         [HttpPost]
         [Route("tokenvalidation")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(TokenValidationResponseDTO), 200)]
         [ProducesResponseType(401)]
         public IActionResult TokenValidation()
         {
-            Models.User.User? user = null;
             var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            Models.User.User? user = databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));
+            var response = new TokenValidationResponseDTO(Convert.ToInt32(userId), user!.Nickname);
             if (userId is not null)
-                return base.StatusCode(StatusCodes.Status200OK);
+                return Json(response);
             else
                 return base.StatusCode(StatusCodes.Status401Unauthorized);
         }
 
         [HttpPost]
         [Route("authorize")]
-        public IActionResult Authorize([FromBody] AuthorizationRequestModel model )
+        public IActionResult Authorize([FromBody] AuthorizationRequestDTO model )
         {
             // Verify model field attributes
             if (!ModelState.IsValid)
@@ -79,7 +82,7 @@ namespace PollingServer.Controllers.Authorization
 
         [HttpPost]
         [Route("register")]
-        public IActionResult Registrate([FromBody] RegistrationRequestModel model)
+        public IActionResult Registrate([FromBody] RegistrationRequestDTO model)
         {
             // Verify model field attributes
             if (!ModelState.IsValid)

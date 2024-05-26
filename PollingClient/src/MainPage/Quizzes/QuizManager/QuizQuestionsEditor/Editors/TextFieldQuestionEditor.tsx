@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import Button from 'react-bootstrap/Button';
 import { putQuestionToServer } from './QuestionEditor'
-import { TextFieldQuestion } from '../../../Questions/TextFieldQuestion';
+import { TextFieldQuestion } from '../../../../../Questions/TextFieldQuestion';
 
 
 const TextFieldQuestionEditor = (props: any) => {

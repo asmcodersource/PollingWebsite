@@ -9,7 +9,7 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\Home\" />
-    <Folder Include="src\Notifications\" />
+    <None Remove="src\AdminPage\**" />
+    <TypeScriptConfiguration Remove="src\AdminPage\**" />
   </ItemGroup>
 </Project>

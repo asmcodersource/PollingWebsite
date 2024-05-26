@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PollingServer.Controllers.Authorization
+namespace PollingServer.Controllers.Authorization.DTOs
 {
-    public class RegistrationRequestModel
+    public class RegistrationRequestDTO
     {
         [Required(ErrorMessage = "Nickname is required")]
         [MaxLength(256, ErrorMessage = "Nickname must be at most 256 characters long")]
@@ -16,7 +16,7 @@ namespace PollingServer.Controllers.Authorization
         public string Password { get; set; }
 
         [Required, EmailAddress(ErrorMessage = "Email must be in correct form")]
-        public string Email  { get; set; }
+        public string Email { get; set; }
 
     }
 }

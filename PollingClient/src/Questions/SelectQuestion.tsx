@@ -11,10 +11,10 @@ const SelectQuestionComponent = (props : any) => {
 
     return (
         <div className="select-question-wrapper">
-            <label>{questionProps.description}</label>
+            <label className="description">{questionProps.description}</label>
             <select>
-                {questionProps.options?.map((option, index) => 
-                    <option>{option}</option>
+                {questionProps.options?.map((option, index) =>
+                    <option key={index}>{option}</option>
                 )}
             </select>
         </div>

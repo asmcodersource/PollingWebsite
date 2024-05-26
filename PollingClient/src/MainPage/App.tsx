@@ -5,7 +5,7 @@ import Navbar, { NavbarLink } from './Navbar';
 import Home from './Home/Home'
 import Quizzes from './Quizzes/Quizzes';
 import Notifications from './Notifications/Notifications';
-import Login from './Login/Login'
+import LoginDialog from '../LoginDialog/LoginDialog'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -117,7 +117,7 @@ function App() {
                         
                     </Stack>
                     {workspace}
-                    <Login ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); } } />
+                    <LoginDialog ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); } } />
                 </>
             }
         </>

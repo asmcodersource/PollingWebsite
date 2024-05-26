@@ -80,3 +80,9 @@
     background-color: dimgrey;
     margin-bottom: 15px !important;  
 }
+
+.error{
+    color: red;
+    padding: 5px 0px;
+    text-align: justify;
+}

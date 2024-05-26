@@ -4,6 +4,10 @@
     padding: 0px;
 }
 
+.question-wrapper .description{
+    text-align: left;
+}
+
 .question-wrapper input {
     background-color: rgba(0,0,0,0);
     border: 0px solid rgba(0,0,0,0);

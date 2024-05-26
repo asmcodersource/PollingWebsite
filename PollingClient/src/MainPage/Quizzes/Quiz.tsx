@@ -8,13 +8,12 @@ import PlaceholderImage from "./quiz-placeholder.jpg";
 import "./Quiz.css";
 
 
-export interface QuizDescriptor {
+export interface Poll {
     id: number,
     title: string,
     description: string,
     createdAt: string,
     img: object,
-
 };
 
 function formateDateTime(dateStr: string): string {
