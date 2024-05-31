@@ -119,7 +119,7 @@ export default Layout;
 
 async function requestQuestions(pollId: number): Promise<Response> {
     try {
-        const response = await fetch(`/api/poll/${pollId}/questions`, {
+        const response = await fetch(`/api/questions/${pollId}`, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -136,7 +136,7 @@ async function requestQuestions(pollId: number): Promise<Response> {
 
 async function requestPollDescription(pollId: number): Promise<Response> {
     try {
-        const response = await fetch(`/api/poll/${pollId}`, {
+        const response = await fetch(`/api/polls/${pollId}`, {
             method: "GET",
             headers: {
                 "Accept": "application/json",

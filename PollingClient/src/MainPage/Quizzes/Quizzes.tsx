@@ -31,7 +31,7 @@ const Quizzes = (props) => {
         const quizzesRequest = new Promise(async (resolve, reject) => {
             let response: Response | null = null;
             try {
-                response = await fetch("api/poll", {
+                response = await fetch("api/polls", {
                     method: "GET",
                     headers: {
                         "Accept": "application/json",

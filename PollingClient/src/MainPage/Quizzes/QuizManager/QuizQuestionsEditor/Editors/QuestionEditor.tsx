@@ -15,7 +15,7 @@ export function putQuestionToServer(question: BaseQuestion, pollId: number) {
     return new Promise(async (resolve, reject) => {
         let response: Response | null = null;
         try {
-            response = await fetch(`/api/poll/${pollId}/question`, {
+            response = await fetch(`/api/questions/${pollId}`, {
                 method: "PUT",
                 headers: {
                     "Accept": "application/json",

@@ -1,4 +1,4 @@
-﻿namespace PollingServer.Controllers.Poll.DTOs
+﻿namespace PollingServer.Controllers.Question.DTOs
 {
     public class CreateQuestionDTO
     {

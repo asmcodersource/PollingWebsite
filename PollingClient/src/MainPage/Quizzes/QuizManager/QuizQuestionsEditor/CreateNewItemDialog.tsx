@@ -31,7 +31,7 @@ const CreateNewItemDialog = (props: any) => {
         const questionsOrderRateUpdate = new Promise(async (resolve, reject) => {
             let response: Response | null = null;
             try {
-                response = await fetch(`/api/poll/${props.quiz.id}/question`, {
+                response = await fetch(`/api/questions/${props.quiz.id}`, {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",

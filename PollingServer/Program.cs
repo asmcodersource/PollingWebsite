@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using PollingServer.Models;
+using PollingServer.Services.PollAccessService;
+using PollingServer.Services.UserFetchService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -57,6 +59,8 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+builder.Services.AddScoped<IPollAccessService, PollAccessService>();
+builder.Services.AddScoped<IUserFetchService, UserFetchService>();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

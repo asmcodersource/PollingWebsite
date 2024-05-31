@@ -30,7 +30,7 @@ const QuizQuestionsEditor = (props: any) => {
         const quizzesRequest = new Promise(async (resolve, reject) => {
             let response: Response | null = null;
             try {
-                response = await fetch(`api/poll/${props.quiz.id}/questions`, {
+                response = await fetch(`/api/questions/${props.quiz.id}`, {
                     method: "GET",
                     headers: {
                         "Accept": "application/json",
@@ -66,27 +66,16 @@ const QuizQuestionsEditor = (props: any) => {
             })
         )
 
-        const questionsOrderRateUpdate = new Promise(async (resolve, reject) => {
-            let response: Response | null = null;
-            try {
-                response = await fetch(`/api/poll/${props.quiz.id}/questions/ordersupdate`, {
-                    method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + sessionStorage.getItem('token')
-                    },
-                    body: JSON.stringify(
-                        questionOrders
-                    )
-                });
-                if (response.status == 200)
-                    resolve(response);
-                else
-                    reject(response);
-            } catch {
-                reject(response);
-            }
+        await fetch(`/api/questions/${props.quiz.id}/order`, {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify(
+                questionOrders
+            )
         });
     }
 
@@ -149,7 +138,7 @@ const QuizQuestionsEditor = (props: any) => {
 
     async function deleteItem(questionId: number) {
         let response: Response | null = null;
-        response = await fetch(`/api/poll/${props.quiz.id}/question/${questionId}`, {
+        response = await fetch(`/api/questions/${props.quiz.id}/${questionId}`, {
             method: "DELETE",
             headers: {
                 "Accept": "application/json",

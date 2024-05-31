@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PollingServer.Controllers.Poll.DTOs
+namespace PollingServer.Controllers.Answers.DTOs
 {
     public class PollAnswersDTO
     {

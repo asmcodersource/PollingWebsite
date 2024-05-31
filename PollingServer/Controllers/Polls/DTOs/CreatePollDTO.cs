@@ -2,7 +2,7 @@
 
 namespace PollingServer.Controllers.Poll.DTOs
 {
-    public class PollCreateModel
+    public class CreatePollDTO
     {
         public string Name { get; set; }
         public string Description { get; set; }
