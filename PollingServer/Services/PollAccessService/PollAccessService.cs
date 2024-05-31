@@ -29,7 +29,7 @@ namespace PollingServer.Services.PollAccessService
                 case Models.Poll.PollingType.OnlyOwner:
                     return poll.OwnerId == user?.Id;
                 case Models.Poll.PollingType.OnlyAllowed:
-                    return poll.AllowedUsers?.Where((allowFor) => allowFor.UserId == user.Id).Count() > 0;
+                    return poll.AllowedUsers?.Where((allowFor) => allowFor.UserId == user?.Id).Count() > 0;
                 default:
                     throw new ApplicationException("Something wen't wrong?");
             }

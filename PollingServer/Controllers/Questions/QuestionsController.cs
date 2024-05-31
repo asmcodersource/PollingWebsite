@@ -46,11 +46,11 @@ namespace PollingServer.Controllers.Questions
             if (pollAccessService.IsUserHasAccessToPoll(poll, HttpContext) is not true)
                 return StatusCode(StatusCodes.Status403Forbidden);
 
-            var question = poll.Questions.Where((q) => q.Id == questionId).FirstOrDefault();
+            var question = poll.Questions!.Where((q) => q.Id == questionId).FirstOrDefault();
             if (question is null)
                 return StatusCode(StatusCodes.Status404NotFound);
 
-            poll.Questions.Remove(question);
+            poll.Questions!.Remove(question);
             databaseContext.Polls.Update(poll);
             databaseContext.SaveChanges();
             return StatusCode(StatusCodes.Status200OK);
@@ -79,7 +79,7 @@ namespace PollingServer.Controllers.Questions
             {
                 var bodyString = reader.ReadToEndAsync().Result;
                 var parsedQuestion = BaseQuestion.ParseJsonByDiscriminator(bodyString, question.Discriminator);
-                var pollQuestion = poll.Questions.FirstOrDefault(q => q.Id == parsedQuestion.Id);
+                var pollQuestion = poll.Questions!.FirstOrDefault(q => q.Id == parsedQuestion.Id);
 
                 if (pollQuestion != null)
                 {
@@ -116,7 +116,7 @@ namespace PollingServer.Controllers.Questions
             var createdQuestion = BaseQuestion.CreateByDiscriminator(createQuestionDTO.QuestionDiscriminator);
             createdQuestion.Description = createQuestionDTO.QuestionDescription;
             createdQuestion.FieldName = createQuestionDTO.QuestionName;
-            poll.Questions.Add(createdQuestion);
+            poll.Questions!.Add(createdQuestion);
             databaseContext.Polls.Update(poll);
             databaseContext.SaveChanges();
             return Json(createdQuestion);
@@ -141,7 +141,7 @@ namespace PollingServer.Controllers.Questions
 
             foreach (var order in questionOrders)
             {
-                var question = poll.Questions.FirstOrDefault((q) => q.Id == order.QuestionId);
+                var question = poll.Questions!.FirstOrDefault((q) => q.Id == order.QuestionId);
                 if (question is not null)
                     question.OrderRate = order.OrderRate;
             }

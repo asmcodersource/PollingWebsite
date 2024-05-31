@@ -1,7 +1,7 @@
 import './Layout.css'
 import { useEffect, useState, useRef } from 'react'
 import { useParams } from "react-router-dom";
-import { BaseQuestion } from '../Questions/QuizQuestion'
+import { BaseQuestion, BaseResponse } from '../Questions/QuizQuestion'
 import LoginDialog from '../LoginDialog/LoginDialog'
 import {  verifyToken, TokenValidationResponse } from '../LoginDialog/LoginDialog'
 import QuizQuestion from '../Questions/QuizQuestion'
@@ -26,6 +26,7 @@ const Layout = () => {
     />)
     const [isLoading, setLoading] = useState<boolean>(false);
     const [questions, setQuestions] = useState<BaseQuestion[]>([]);
+    const [answers, setAnswers] = useState<Map<number, BaseResponse>>(new Map<number, BaseResponse>());
     const [poll, setPoll] = useState<Poll>();
     let { pollId } = useParams<"pollId">();
 
@@ -73,6 +74,22 @@ const Layout = () => {
         setAuthorized(false);
     }
 
+    async function sendResponse()
+    {
+        let responses: BaseResponse[] = [];
+        for (let answer of answers.values())
+            responses.push(answer);
+
+        const response = await fetch(`/api/answers/${pollId}`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify(responses)
+        });
+    }
 
     useEffect(
         () => {
@@ -99,10 +116,10 @@ const Layout = () => {
                     <p className="description">{poll?.description}</p>
                     {questions.map(question =>
                         <div key={question.id} className="poll-question-wrapper">
-                            <QuizQuestion question={question} />
+                            <QuizQuestion question={question} responseDictionary={answers} />
                         </div>
-                        )}
-                    <Button className="response-button">Send response</Button>
+                    )}
+                    <Button className="response-button" onClick={sendResponse}>Send response</Button>
                     </div>
                 </>
                 :

@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using PollingServer.Models.Poll.Question;
+using PollingServer.Models.Poll.Answer;
 
-namespace PollingServer.Models.Poll.Answer
+namespace PollingServer.Models.Poll
 {
     public class PollAnswers
     {

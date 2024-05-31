@@ -3,10 +3,11 @@ using PollingServer.Models.User;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using PollingServer.Models.Poll;
 
 namespace PollingServer.Controllers.Answers.DTOs
 {
-    public class PollAnswersDTO
+    public class AnswersDTO
     {
         [Required, Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -20,7 +21,7 @@ namespace PollingServer.Controllers.Answers.DTOs
         [Required, NotNull]
         public ICollection<BaseAnswer>? Answers { get; set; }
 
-        public PollAnswersDTO(PollAnswers pollAnswers)
+        public AnswersDTO(PollAnswers pollAnswers)
         {
             Id = pollAnswers.Id;
             UserId = pollAnswers.UserId;

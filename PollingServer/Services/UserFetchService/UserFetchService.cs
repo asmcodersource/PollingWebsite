@@ -16,7 +16,6 @@ namespace PollingServer.Services.UserFetchService
 
         public User? GetUserFromContext(HttpContext httpContext)
         {
-            Models.User.User? user = null;
             var userId = httpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
             if (userId is not null)
                 return databaseContext.Users.FirstOrDefault((user) => user.Id == Convert.ToInt32(userId));

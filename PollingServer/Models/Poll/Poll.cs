@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using PollingServer.Models.User;
 using PollingServer.Models.Image;
 using PollingServer.Models.Poll.Question;
-using PollingServer.Models.Poll.Answer;
 
 namespace PollingServer.Models.Poll
 {

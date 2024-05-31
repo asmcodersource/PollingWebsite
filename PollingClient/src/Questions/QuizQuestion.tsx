@@ -11,6 +11,10 @@ export interface BaseQuestion {
     orderRate: number,
 };
 
+export interface BaseResponse {
+    questionId: number,
+}
+
 const QuizQuestion = (props) => {
     const [question, setQuestion] = useState(props.question);
 
@@ -18,10 +22,10 @@ const QuizQuestion = (props) => {
 
     switch (question.discriminator) {
         case 'TextFieldQuestion':
-            questionComponent = <TextFieldQuestionComponent question={question} />;
+            questionComponent = <TextFieldQuestionComponent question={question} responseDictionary={props.responseDictionary} />;
             break;
         case 'SelectQuestion':
-            questionComponent = <SelectQuestionComponent question={question} />;
+            questionComponent = <SelectQuestionComponent question={question} responseDictionary={props.responseDictionary} />;
             break;
         default:
             questionComponent = null;

@@ -10,7 +10,7 @@ namespace PollingServer.Models.Poll.Question
 
     [JsonDerivedType(typeof(SelectQuestion))]
     [JsonDerivedType(typeof(TextFieldQuestion))]
-    public class BaseQuestion
+    public abstract class BaseQuestion
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -25,8 +25,11 @@ namespace PollingServer.Models.Poll.Question
         public int OrderRate { get; set; } = int.MaxValue;
 
         [Required]
-        public string Discriminator { get; set; }
+        public string Discriminator { get; set; } = null!;
 
+        [NotMapped]
+        [JsonIgnore]
+        public abstract Type AnswerType { get; }
 
         public static BaseQuestion ParseJsonByDiscriminator(string json, string discriminator)
         {
