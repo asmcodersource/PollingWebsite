@@ -1,8 +1,11 @@
 .poll-wrapper{
     padding: 20px;
     width: 100%;
+    height: fit-content;
     min-height: 100vh;
+    box-sizing: border-box;
     background-color: white;
+    padding-bottom: 50px;
 }
 
 .poll-wrapper .response-button{
@@ -54,4 +57,12 @@
 
 .poll-question-wrapper {
     padding: 10px 0px;
+}
+
+.poll-wrapper .answer-accepted {
+    width: 100%;
+    display: block;
+    margin-top: 8px;
+    font-size: 10pt;
+    color: #808080;
 }

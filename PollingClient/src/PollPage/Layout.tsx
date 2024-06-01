@@ -15,7 +15,18 @@ enum PollRequestExceptions {
     InvalidException
 }
 
+export interface ValidationResult {
+    memberNames: string[],
+    errorMessage: string,
+}
+
+export interface ValidationErrorResponse {
+    validationResult: ValidationResult[],
+    questionId: number
+}
+
 const Layout = () => {
+    const [answerAccepted, setAnswerAccepted] = useState<boolean>(false);
     const [authorized, setAuthorized] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const loginRef = useRef();
@@ -24,6 +35,7 @@ const Layout = () => {
         info="You do not have rights to access this survey, please log in to be able to take this survey."
         loggedIn={tryFetchPollResources}
     />)
+    const [postErrors, setPostErrors] = useState<ValidationErrorResponse[]>();
     const [isLoading, setLoading] = useState<boolean>(false);
     const [questions, setQuestions] = useState<BaseQuestion[]>([]);
     const [answers, setAnswers] = useState<Map<number, BaseResponse>>(new Map<number, BaseResponse>());
@@ -76,6 +88,7 @@ const Layout = () => {
 
     async function sendResponse()
     {
+        setAnswerAccepted(false);
         let responses: BaseResponse[] = [];
         for (let answer of answers.values())
             responses.push(answer);
@@ -89,6 +102,15 @@ const Layout = () => {
             },
             body: JSON.stringify(responses)
         });
+        if (response.status == 200) {
+            setAnswerAccepted(true);
+            setPostErrors(null);
+        }
+        if (response.status == 400) {
+            let errors: ValidationErrorResponse[] = (await response.json())["value"];
+            console.log(errors);
+            setPostErrors(errors);
+        }
     }
 
     useEffect(
@@ -97,6 +119,7 @@ const Layout = () => {
         },
         []
     )
+
 
     return (
         <>
@@ -114,13 +137,21 @@ const Layout = () => {
                     <div className="poll-wrapper">
                     <h1 className="title">{poll?.title}</h1>
                     <p className="description">{poll?.description}</p>
+                    <hr />
                     {questions.map(question =>
                         <div key={question.id} className="poll-question-wrapper">
-                            <QuizQuestion question={question} responseDictionary={answers} />
+                            <QuizQuestion
+                                question={question}
+                                postErrors={postErrors}
+                                responseDictionary={answers}
+                            />
                         </div>
-                    )}
-                    <Button className="response-button" onClick={sendResponse}>Send response</Button>
+                        )}
+                        <div> {answerAccepted ? (<p className="answer-accepted">Your answer succesfully accepted</p>) : (<></>)}</div>
+                        <Button className="response-button" onClick={sendResponse}>Send response</Button>
+                       
                     </div>
+                   
                 </>
                 :
                 <>

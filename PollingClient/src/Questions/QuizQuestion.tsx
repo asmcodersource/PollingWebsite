@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './QuizQuestion.css';
 import TextFieldQuestionComponent from './TextFieldQuestion';
 import SelectQuestionComponent from './SelectQuestion';
+import { ValidationErrorResponse, ValidationResult } from './../PollPage/Layout'
 
 export interface BaseQuestion {
     id: number,
@@ -31,9 +32,25 @@ const QuizQuestion = (props) => {
             questionComponent = null;
     }
 
+    let errorsMsg = "";
+    props.postErrors?.forEach((e: ValidationErrorResponse) => {
+        if (e.questionId == props.question.id) {
+            e.validationResult.forEach((vr: ValidationResult) => {
+                errorsMsg = errorsMsg + vr.errorMessage;
+            })
+        }
+    });
+
     return (
         <div className="question-wrapper">
             {questionComponent}
+            {errorsMsg.length != 0 ?
+                (
+                <div className="error-box">
+                    {errorsMsg}
+                </div>
+                ) : (<></>)
+            }
         </div>
     );
 }
