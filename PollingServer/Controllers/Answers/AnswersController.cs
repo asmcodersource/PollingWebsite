@@ -33,7 +33,7 @@ namespace PollingServer.Controllers.Answers
 
         [HttpPost]
         [Route("{pollId}")]
-        [ProducesResponseType(typeof(IEnumerable<List<ValidationResult>>), 400)]
+        [ProducesResponseType(typeof(IEnumerable<List<ValidationErrorResponse>>), 400)]
         [ProducesResponseType(200)]
         [ReadableBodyStream, MaxBodyStreamLength(1 * 1024 * 1024)]
         public async Task<IActionResult> CreatePollAnswer(int pollId, [FromBody] List<BaseNewAnswersDTO> newAnswersDTOs )
@@ -71,21 +71,27 @@ namespace PollingServer.Controllers.Answers
 
             int jsonCurrentElementIndex = 0;
             List<BaseAnswer> parsedAnswers = new List<BaseAnswer>();
-            List<ValidationResult> validationResults = new List<ValidationResult>();
-            foreach( var jsonElement in document.RootElement.EnumerateArray())
+            List<ValidationErrorResponse> validationErrorResponses = new List<ValidationErrorResponse>();
+            foreach ( var jsonElement in document.RootElement.EnumerateArray())
             {
                 var truncatedAnswer = newAnswersDTOs[jsonCurrentElementIndex]; // it serrialized only properties of base class
                 var question = questions.Find((question) => question.Id == truncatedAnswer.QuestionId);
                 var parsedAnswer = BaseAnswer.ParseJsonByExplicitType(jsonElement.GetRawText(), question!.AnswerType);
+                List<ValidationResult> validationResults = new List<ValidationResult>();
                 validationResults.AddRange(parsedAnswer.ValidateObjectByModel());
                 validationResults.AddRange(parsedAnswer.ValidateByQuestion(question));
+                if (validationResults.Count != 0) 
+                {
+                    var validationErrorResponse = new ValidationErrorResponse(validationResults, question.Id);
+                    validationErrorResponses.Add(validationErrorResponse);
+                }
                 parsedAnswers.Add(parsedAnswer);
                 jsonCurrentElementIndex = jsonCurrentElementIndex + 1;
             }
 
-            if (validationResults.Count != 0)
+            if (validationErrorResponses.Count != 0)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, Json(validationResults));
+                return StatusCode(StatusCodes.Status400BadRequest, Json(validationErrorResponses));
             }
             else
             {
