@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using PollingServer.Models.Poll.Answer;
 
 namespace PollingServer.Models.Poll.Question
 {
@@ -27,8 +28,7 @@ namespace PollingServer.Models.Poll.Question
         [Required]
         public string Discriminator { get; set; } = null!;
 
-        [NotMapped]
-        [JsonIgnore]
+        [JsonIgnore, NotMapped]
         public abstract Type AnswerType { get; }
 
         public static BaseQuestion ParseJsonByDiscriminator(string json, string discriminator)

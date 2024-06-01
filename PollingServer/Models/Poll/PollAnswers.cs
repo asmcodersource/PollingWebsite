@@ -17,7 +17,7 @@ namespace PollingServer.Models.Poll
         public int UserId { get; set; }
 
         [Required, ForeignKey(nameof(UserId))]
-        public User.User? User { get; set; }
+        public User.User User { get; set; } = null!;
 
         [Required]
         public DateTime AnswerTime { get; set; } = DateTime.UtcNow;

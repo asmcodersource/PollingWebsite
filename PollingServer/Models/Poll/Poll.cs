@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using PollingServer.Models.User;
 using PollingServer.Models.Image;
 using PollingServer.Models.Poll.Question;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PollingServer.Models.Poll
 {
@@ -45,7 +48,11 @@ namespace PollingServer.Models.Poll
         public virtual ICollection<PollAnswers>? Answers { get; set; }
         public virtual ICollection<BaseQuestion>? Questions { get; set; }
         public virtual ICollection<PollAllowedUsers>? AllowedUsers { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public PollingType Type { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public PollingAccess Access { get; set; }
     }
 }

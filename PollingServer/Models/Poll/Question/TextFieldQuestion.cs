@@ -8,17 +8,12 @@ namespace PollingServer.Models.Poll.Question
 {
     public class TextFieldQuestion : BaseQuestion
     {
-        [JsonIgnore]
-        private static readonly Type answerType = typeof(TextFieldAnswer);
-
         [Required]
         public string FieldPlaceholder { get; set; } = string.Empty;
 
         [NotMapped, JsonIgnore]
-        public override Type AnswerType
-        {
-            get { return answerType; }
-        }
+        public override Type AnswerType { get { return typeof(TextFieldAnswer); } }
+
     }
 
 }

@@ -9,6 +9,7 @@ using PollingServer.Models.Poll.Answer;
 using PollingServer.Models.Poll.Question;
 using PollingServer.Services.PollAccessService;
 using PollingServer.Services.UserFetchService;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -32,7 +33,9 @@ namespace PollingServer.Controllers.Answers
 
         [HttpPost]
         [Route("{pollId}")]
-        [ReadableBodyStream]
+        [ProducesResponseType(typeof(IEnumerable<List<ValidationResult>>), 400)]
+        [ProducesResponseType(200)]
+        [ReadableBodyStream, MaxBodyStreamLength(1 * 1024 * 1024)]
         public async Task<IActionResult> CreatePollAnswer(int pollId, [FromBody] List<BaseNewAnswersDTO> newAnswersDTOs )
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
@@ -68,42 +71,56 @@ namespace PollingServer.Controllers.Answers
 
             int jsonCurrentElementIndex = 0;
             List<BaseAnswer> parsedAnswers = new List<BaseAnswer>();
+            List<ValidationResult> validationResults = new List<ValidationResult>();
             foreach( var jsonElement in document.RootElement.EnumerateArray())
             {
                 var truncatedAnswer = newAnswersDTOs[jsonCurrentElementIndex]; // it serrialized only properties of base class
                 var question = questions.Find((question) => question.Id == truncatedAnswer.QuestionId);
                 var parsedAnswer = BaseAnswer.ParseJsonByExplicitType(jsonElement.GetRawText(), question!.AnswerType);
+                validationResults.AddRange(parsedAnswer.ValidateObjectByModel());
+                validationResults.AddRange(parsedAnswer.ValidateByQuestion(question));
                 parsedAnswers.Add(parsedAnswer);
                 jsonCurrentElementIndex = jsonCurrentElementIndex + 1;
             }
 
-            var newAcceptedAnswer = new PollAnswers()
+            if (validationResults.Count != 0)
             {
-                AnswerTime = DateTime.UtcNow,
-                BaseAnswers = parsedAnswers,
-                UserId = user.Id,
-                User = user
-            };
-            poll.Answers!.Add(newAcceptedAnswer);
-            databaseContext.Update(poll);
-            databaseContext.SaveChanges();
-            return StatusCode(StatusCodes.Status200OK);
+                return StatusCode(StatusCodes.Status400BadRequest, Json(validationResults));
+            }
+            else
+            {
+                var newAcceptedAnswer = new PollAnswers()
+                {
+                    AnswerTime = DateTime.UtcNow,
+                    BaseAnswers = parsedAnswers,
+                    UserId = user.Id,
+                    User = user
+                };
+                poll.Answers!.Add(newAcceptedAnswer);
+                databaseContext.Update(poll);
+                databaseContext.SaveChanges();
+                return StatusCode(StatusCodes.Status200OK);
+            }
         }
 
         [Authorize]
         [HttpGet]
         [Route("{pollId}/{answerId}")]
-        [ProducesResponseType(typeof(IEnumerable<AnswersDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<AnswerDTO>), 200)]
         public IActionResult GetPollAnswer(int pollId, int? answerId)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
-            Models.Poll.Poll? poll = databaseContext.Polls.Find(pollId);
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Answers!)
+                    .ThenInclude(a => a.BaseAnswers)
+                .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
             // Ensure that user has access to this poll
             if (poll.OwnerId != user!.Id)
                 return StatusCode(StatusCodes.Status403Forbidden);
-            var answer = poll.Answers?.Where((answer) => answer.Id == answerId).Select((answers) => new AnswersDTO(answers));
+            var answer = poll.Answers?.Where((answer) => answer.Id == answerId).Select((answers) => new AnswerDTO(answers));
             if (answer is null || answer?.Count() == 0)
                 return StatusCode(StatusCodes.Status404NotFound);
             return Json(answer);
@@ -116,7 +133,10 @@ namespace PollingServer.Controllers.Answers
         public IActionResult GetPollAnswers(int pollId)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
-            Models.Poll.Poll? poll = databaseContext.Polls.Find(pollId);
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Answers!)
+                .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
             // Ensure that user has access to this poll
@@ -132,7 +152,10 @@ namespace PollingServer.Controllers.Answers
         public IActionResult DeletePollAnswer(int pollId, int? answerId)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
-            Models.Poll.Poll? poll = databaseContext.Polls.Find(pollId);
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Answers!)
+                .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
             // Ensure that user has access to this poll
@@ -154,7 +177,10 @@ namespace PollingServer.Controllers.Answers
         public IActionResult DeletePollAnswers(int pollId)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
-            Models.Poll.Poll? poll = databaseContext.Polls.Find(pollId);
+            var poll = databaseContext.Polls
+                .Where(p => p.Id == pollId)
+                .Include(p => p.Answers!)
+                .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
             // Ensure that user has access to this poll
