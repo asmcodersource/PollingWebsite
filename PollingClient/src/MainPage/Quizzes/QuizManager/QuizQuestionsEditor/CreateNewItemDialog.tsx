@@ -95,7 +95,7 @@ const CreateNewItemDialog = (props: any) => {
                         <input id="field-description" placeholder="visible description of question"></input><br />
                         <label>Object type</label><br />
                         <select id="field-discriminator">
-                            {availableDiscriminators.map(option => <option>{option}</option>)}
+                            {availableDiscriminators.map((option, index) => <option key={index}>{option}</option>)}
                         </select>
                         <br />
                         <p className="text-secondary text-justify">The field name field is needed for internal data processing needs (in the future it can be used to export data from the site). The description field is the message that will be displayed before a specific input/selection field. The object type determines what type of question will be created. After creation, you can edit the created question.</p>

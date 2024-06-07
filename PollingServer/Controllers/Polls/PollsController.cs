@@ -1,17 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PollingServer.Controllers.Poll.DTOs;
+using PollingServer.Controllers.Polls.DTOs;
 using PollingServer.Models;
-using PollingServer.Models.Poll;
-using PollingServer.Models.Poll.Answer;
-using PollingServer.Models.Poll.Question;
-using System.Security.Claims;
-using System.Text;
-using PollingServer.Filters;
-using System.Text.Json;
 using PollingServer.Services.PollAccessService;
-using PollingServer.Controllers.Question;
 using PollingServer.Services.UserFetchService;
 
 namespace PollingServer.Controllers.Polls
@@ -24,33 +16,29 @@ namespace PollingServer.Controllers.Polls
         public IPollAccessService pollAccessService { get; protected set; }
         public IUserFetchService userFetchService { get; protected set; }
 
-        public PollsController( DatabaseContext databaseContext, IPollAccessService pollAccessService, IUserFetchService userFetchService)
+        public PollsController(DatabaseContext databaseContext, IPollAccessService pollAccessService, IUserFetchService userFetchService)
         {
             this.databaseContext = databaseContext;
             this.pollAccessService = pollAccessService;
             this.userFetchService = userFetchService;
         }
 
-
-        [HttpGet]
-        [Route("{pollId}")]
+        [HttpGet("{pollId}")]
         [ProducesResponseType(typeof(PollDTO), 200)]
-        public IActionResult GetPollDescription( int pollId )
+        public IActionResult GetPollDescription(int pollId)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
             Models.Poll.Poll? poll = databaseContext.Polls.Find(pollId);
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
             // Ensure that user has access to this poll
-            if( pollAccessService.IsUserHasAccessToPoll(poll, HttpContext) is not true )
+            if (pollAccessService.IsUserHasAccessToPoll(poll, HttpContext) is not true)
                 return StatusCode(StatusCodes.Status403Forbidden);
             var pollDTO = new PollDTO(poll);
             return Json(pollDTO);
         }
 
-
-        [HttpGet]
-        [Authorize]
+        [HttpGet, Authorize]
         [ProducesResponseType(typeof(ICollection<PollDTO>), 200)]
         public IActionResult GetPolls()
         {
@@ -59,8 +47,7 @@ namespace PollingServer.Controllers.Polls
             return Json(polls.ToList());
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpPost, Authorize]
         [ProducesResponseType(typeof(PollDTO), 200)]
         public IActionResult Create([FromBody] CreatePollDTO pollCreateModel)
         {
@@ -85,18 +72,38 @@ namespace PollingServer.Controllers.Polls
             return Json(pollDTO);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        [Authorize]
+        [HttpDelete("{id}"), Authorize]
         public IActionResult Delete(int id)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
             Models.Poll.Poll? poll = databaseContext.Polls.Find(id);
-            if (poll is null )
+            if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
             if (poll.OwnerId != user!.Id)
                 return StatusCode(StatusCodes.Status403Forbidden);
             databaseContext.Polls.Remove(poll);
+            databaseContext.SaveChanges();
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
+        [HttpPut("{id}"), Authorize]
+        public IActionResult Update(int id, [FromBody] UpdatePollDTO updatePollDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
+            Models.Poll.Poll? poll = databaseContext.Polls.Find(id);
+            if (poll is null)
+                return StatusCode(StatusCodes.Status404NotFound);
+            if (poll.OwnerId != user!.Id)
+                return StatusCode(StatusCodes.Status403Forbidden);
+            poll.Title = updatePollDTO.Title;
+            poll.Description = updatePollDTO.Description;
+            poll.Type = updatePollDTO.Type;
+            databaseContext.Update(poll);
             databaseContext.SaveChanges();
             return StatusCode(StatusCodes.Status200OK);
         }

@@ -9,14 +9,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PollingServer.Models.Poll
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PollingType
     {
         Anyone, // Anyone can access 
-        Auhorized, // Only authorized can access
+        Authorized, // Only authorized can access
         OnlyAllowed, // Only authorized and allowed can access 
         OnlyOwner, // Only owner can access
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PollingAccess
     {
         Public, // Shown on pages

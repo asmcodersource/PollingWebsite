@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PollingServer.Controllers.Authorization.DTOs;
@@ -30,8 +31,7 @@ namespace PollingServer.Controllers.Authorization
             this.databaseContext = databaseContext;
         }
 
-        [HttpPost]
-        [Route("tokenvalidation")]
+        [HttpPost("tokenvalidation"), Authorize]
         [ProducesResponseType(typeof(TokenValidationResponseDTO), 200)]
         [ProducesResponseType(401)]
         public IActionResult TokenValidation()

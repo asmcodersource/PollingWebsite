@@ -11,7 +11,7 @@ namespace PollingServer.Models.Poll.Question
 
     [JsonDerivedType(typeof(SelectQuestion))]
     [JsonDerivedType(typeof(TextFieldQuestion))]
-    public abstract class BaseQuestion
+    public class BaseQuestion
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -29,7 +29,11 @@ namespace PollingServer.Models.Poll.Question
         public string Discriminator { get; set; } = null!;
 
         [JsonIgnore, NotMapped]
-        public abstract Type AnswerType { get; }
+        public virtual Type AnswerType { get { return typeof(BaseAnswer); } }
+
+
+        [JsonConstructor]
+        public BaseQuestion(){/* Parameterless constructor for serrialization */}
 
         public static BaseQuestion ParseJsonByDiscriminator(string json, string discriminator)
         {

@@ -24,7 +24,7 @@ namespace PollingServer.Services.PollAccessService
             {
                 case Models.Poll.PollingType.Anyone:
                     return true;
-                case Models.Poll.PollingType.Auhorized:
+                case Models.Poll.PollingType.Authorized:
                     return user is not null;
                 case Models.Poll.PollingType.OnlyOwner:
                     return poll.OwnerId == user?.Id;

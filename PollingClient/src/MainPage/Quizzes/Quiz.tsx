@@ -55,11 +55,11 @@ const Quiz = (props) => {
             <Card.Body>     
                 <Card.Text className="quiz-description">
                     {!isLoaded ? (
-                        <Placeholder as={Card.Text} animation="glow">
+                        <>
                             <Placeholder xs={2} /> <Placeholder xs={4} /> <Placeholder xs={1} /> <Placeholder xs={2} /> <Placeholder xs={4} />{' '}
                             <Placeholder xs={4} /> <Placeholder xs={2} /> <Placeholder xs={1} /> <Placeholder xs={8} /> <Placeholder xs={3} />
                             <Placeholder xs={8} /> <Placeholder xs={2} /> <Placeholder xs={1} /> <Placeholder xs={3} /> <Placeholder xs={3} />
-                        </Placeholder>
+                        </>
                     ) : (
                         props.description
                     )}

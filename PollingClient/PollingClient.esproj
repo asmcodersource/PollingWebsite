@@ -12,4 +12,7 @@
     <None Remove="src\AdminPage\**" />
     <TypeScriptConfiguration Remove="src\AdminPage\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\MainPage\Quizzes\QuizManager\QuizAnswersManager\" />
+  </ItemGroup>
 </Project>

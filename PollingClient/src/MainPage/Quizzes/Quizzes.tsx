@@ -27,7 +27,7 @@ const Quizzes = (props) => {
     const [dialog, setDialog] = useState(null);
     const [quizzes, setQuizzes] = useState(placeholderQuizzes);
 
-    useEffect(() => {
+    function fetchPolls() {
         const quizzesRequest = new Promise(async (resolve, reject) => {
             let response: Response | null = null;
             try {
@@ -47,7 +47,7 @@ const Quizzes = (props) => {
                 reject(response);
             }
         });
-        quizzesRequest.then(    
+        quizzesRequest.then(
             async (response) => {
                 const json = await response.json();
                 const quizzes = []
@@ -58,22 +58,25 @@ const Quizzes = (props) => {
                 setQuizzes(quizzes);
             }
         )
-    }, [])
+    }
+
+    useEffect(fetchPolls, [])
 
     return (
         <>
             <Container className="quizzes-wrapper">
                 {quizzes.map((quiz, index) =>
-                (<>
+                (
                     < Quiz key={quiz.id} {...quiz} onClick={(quiz) => {
                         setDialog(<QuizManager
                             key={-quiz.id}
                             quiz={quiz}
                             show={true}
-                            hideDialog={() => setDialog(<QuizManager key={-quiz.id} quiz={quiz} show={false} />)} />
+                            hideDialog={() => { fetchPolls(); setDialog(<QuizManager key={-quiz.id} quiz={quiz} show={false} />);  }}
+                        />
                         );
                     }} />
-                    </>)
+                    )
                 )}
             </Container>
             {dialog}
