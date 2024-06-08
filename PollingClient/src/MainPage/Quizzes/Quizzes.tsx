@@ -66,16 +66,14 @@ const Quizzes = (props) => {
         <>
             <Container className="quizzes-wrapper">
                 {quizzes.map((quiz, index) =>
-                (
-                    < Quiz key={quiz.id} {...quiz} onClick={(quiz) => {
+                    (
+                    < Quiz key={quiz.id} {...quiz} onClick={(quiz : any) => {
                         setDialog(<QuizManager
-                            key={-quiz.id}
                             quiz={quiz}
                             show={true}
                             hideDialog={() => { fetchPolls(); setDialog(<QuizManager key={-quiz.id} quiz={quiz} show={false} />);  }}
-                        />
-                        );
-                    }} />
+                        />);
+                    }}/>
                     )
                 )}
             </Container>

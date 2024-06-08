@@ -1,4 +1,5 @@
 import './QuizGeneralSettings.css';
+import AllowedUsersEditor from './AllowedUsersEditor/AllowedUsersEditor'
 import Button from 'react-bootstrap/Button';
 import { useMemo, useState } from 'react'
 
@@ -12,15 +13,16 @@ enum PollingType {
 interface QuizSettings {
     title: string,
     description: string,
-    pollingType: PollingType
+    type: PollingType
 };
 
 
-const QuizGeneralSettings = (props : any) => {
-    const [settings, setSettings] = useState<QuizSettings>(props.quiz);
+const QuizGeneralSettings = (props: any) => {
+    const [showAllowedUsers, setShowAllowedUsers] = useState<boolean>();
+    const [settings, setSettings] = useState<QuizSettings>({ ...props.quiz, pollingType: props.quiz.type });
 
     const typesOfPolling = useMemo(() => {
-        const values: string[] = Object.values(PollingType) as string[];
+        const values = Object.values(PollingType) as PollingType[];
         return values.slice(0, Math.floor(values.length / 2));
     }, [Object.values(PollingType)]);
 
@@ -63,15 +65,27 @@ const QuizGeneralSettings = (props : any) => {
             >
             </textarea><br />
             <label>Access type</label>
-            <select onChange={(e) => setSettings({ ...settings, type: pollingTypeToString(e.target.value as keyof typeof PollingType) } as QuizSettings)}>
+            <select
+                defaultValue={String(pollingTypeToString(settings.type))}
+                onChange={(e) => {
+                    setSettings({ ...settings, type: PollingType[e.target.selectedIndex] as keyof PollingType } as unknown as QuizSettings);
+                }}
+            >
                 {
-                    typesOfPolling.map((option: string, index) =>
+                    typesOfPolling.map((option, index) =>
                         <option key={index}>{pollingTypeToString(option)}</option>)
                 }
             </select>
+            {
+                settings.type.toString() == PollingType[PollingType.OnlyAllowed].toString() ?
+                <Button onClick={(_) => setShowAllowedUsers(true)}>Edit allowed users</Button>
+                :
+                <></>
+            }
             <div className="buttons-wrapper">
                 <Button variant="primary" onClick={saveSettings}>Save changes</Button>
             </div>
+            <AllowedUsersEditor poll={props.quiz} show={showAllowedUsers} setShow={(isShow : boolean) => setShowAllowedUsers(isShow)} />
         </div>
     )
 }
@@ -80,15 +94,15 @@ const QuizGeneralSettings = (props : any) => {
 export default QuizGeneralSettings;
 
 
-function pollingTypeToString(type: string): String {
-    switch (PollingType[type as keyof typeof PollingType]) {
-        case PollingType.Anyone:
+function pollingTypeToString(type: PollingType): String {
+    switch (type.toString()) {
+        case PollingType[PollingType.Anyone].toString():
             return "Anyone";
-        case PollingType.Authorized:
+        case PollingType[PollingType.Authorized].toString():
             return "Authorized";
-        case PollingType.OnlyAllowed:
+        case PollingType[PollingType.OnlyAllowed].toString():
             return "Only allowed";
-        case PollingType.OnlyOwner:
+        case PollingType[PollingType.OnlyOwner].toString():
             return "Only owner";
         default:
             throw new Error("Undefined mapped string value for this key of PollingType");

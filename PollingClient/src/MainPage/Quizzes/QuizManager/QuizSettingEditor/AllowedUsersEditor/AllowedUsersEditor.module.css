@@ -1,0 +1,36 @@
+.user{
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-between;
+
+    & span {
+        margin-left: 10px;
+        margin-top: auto;
+        margin-bottom: auto;
+        height: fit-content;
+        font-weight: 700;
+    }
+    
+    & Button {
+        background: rgba(0,0,0,0.0);
+        border-radius: 0px;
+        border: 0px solid rgba(0,0,0,0);
+        color: black;
+        font-weight: 500;
+    }
+}
+
+
+addButtonWrapper{
+    display: inline-block;
+    float: right;
+    width: 100px;
+    right: 0px;
+    bottom: 0px;
+    position: absolute;
+}
