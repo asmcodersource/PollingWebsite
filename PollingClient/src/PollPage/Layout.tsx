@@ -84,6 +84,7 @@ const Layout = () => {
     function logOut() {
         sessionStorage.removeItem("token");
         setAuthorized(false);
+        tryFetchPollResources();
     }
 
     async function sendResponse()

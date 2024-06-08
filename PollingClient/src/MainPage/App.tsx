@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, createRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Stack from 'react-bootstrap/Stack';
 import Spinner from 'react-bootstrap/Spinner';
 import Navbar, { NavbarLink } from './Navbar';
@@ -6,6 +6,7 @@ import Home from './Home/Home'
 import Quizzes from './Quizzes/Quizzes';
 import Notifications from './Notifications/Notifications';
 import LoginDialog from '../LoginDialog/LoginDialog'
+import RegisterDialog from '../RegisterDialog/RegisterDialog'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -15,6 +16,7 @@ function App() {
     const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
     const [workspace, setWorkspace] = useState<JSX.Element>(<Home />);
     const loginRef = useRef();
+    const registerRef = useRef();
 
     const loggedInLinks: NavbarLink[] = [
         {
@@ -56,9 +58,15 @@ function App() {
         },
         {
             id: 2,
-            name: "Log in",
+            name: "Sign in",
             url: "#",
             handler: () => { loginRef.current.setShow(true); },
+        },
+        {
+            id: 3,
+            name: "Sign up",
+            url: "#",
+            handler: () => { registerRef.current.setShow(true); },
         },
     ];
 
@@ -117,7 +125,8 @@ function App() {
                         
                     </Stack>
                     {workspace}
-                    <LoginDialog ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); } } />
+                    <LoginDialog ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); }} />
+                    <RegisterDialog ref={registerRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); }} />
                 </>
             }
         </>

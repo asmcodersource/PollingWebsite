@@ -1,0 +1,80 @@
+.register-wrapper{
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    max-height: 700px;
+    flex-grow: 1;
+}
+
+.register-wrapper label {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.register-wrapper input {
+    background-color: rgba(0,0,0,0);
+    border: 0px solid rgba(0,0,0,0);
+    border-bottom: 1px solid #3d97ff;
+    width: 100%;
+    outline: none;
+    color: black;
+}
+
+.register-wrapper input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px rgb(255,255,255) inset;
+    -webkit-text-fill-color: #000;
+}
+
+.register-wrapper input:focus {
+    font-weight: 600;
+}
+
+.register-wrapper .buttons-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0px 5px;
+}
+
+.register-wrapper button {
+    margin-top: 10px;
+    width: 100px;
+    padding: 0px 0px;
+    height: 30px;
+    border-radius: 0px;
+}
+
+.register-wrapper .info{
+    padding: 0px 5px;
+    text-align: justify;
+}
+
+.register-wrapper .error-wrapper {
+    flex-grow: 1;
+    width: 100%;
+    text-align: justify;
+    box-sizing: border-box;
+    padding: 0px 0px;
+}
+
+.register-wrapper .error-wrapper .waiting-spinner{
+    margin: 0px 0px;
+}
+
+.register-wrapper  .bottom-wrapper {
+    height: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 30px;
+}
+
+.center{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
