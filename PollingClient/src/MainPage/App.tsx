@@ -2,9 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import Stack from 'react-bootstrap/Stack';
 import Spinner from 'react-bootstrap/Spinner';
 import Navbar, { NavbarLink } from './Navbar';
-import Home from './Home/Home'
 import Quizzes from './Quizzes/Quizzes';
-import Notifications from './Notifications/Notifications';
 import LoginDialog from '../LoginDialog/LoginDialog'
 import RegisterDialog from '../RegisterDialog/RegisterDialog'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,17 +12,11 @@ import './App.css';
 function App() {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
-    const [workspace, setWorkspace] = useState<JSX.Element>(<Home />);
+    const [workspace, setWorkspace] = useState<JSX.Element>(<></>);
     const loginRef = useRef();
     const registerRef = useRef();
 
     const loggedInLinks: NavbarLink[] = [
-        {
-            id: 1,
-            name: "Home",
-            url: "#",
-            handler: () => setWorkspace(<Home />),
-        },
         {
             id: 2,
             name: "Quizzes",
@@ -32,17 +24,11 @@ function App() {
             handler: () => setWorkspace(<Quizzes />),
         },
         {
-            id: 3,
-            name: "Notifications",
-            url: "#",
-            handler: () => setWorkspace(<Notifications />),
-        },
-        {
             id: 4,
             name: "Log out",
             url: "#",
             handler: () => {
-                setWorkspace(<Home />),
+                setWorkspace(<></>),
                 sessionStorage.removeItem("token");
                 setLoggedIn(false);
             },
@@ -50,12 +36,6 @@ function App() {
     ];
 
     const loggedOutLinks: NavbarLink[] = [
-        {
-            id: 1,
-            name: "Home",
-            url: "#",
-            handler: () => setWorkspace(<Home />),
-        },
         {
             id: 2,
             name: "Sign in",
@@ -105,7 +85,7 @@ function App() {
                 setLoggedIn(false);
             }
         ).finally(
-            () => setWorkspace(<Home />)
+            () => setWorkspace(<></>)
         );
     }, [])
 
@@ -125,8 +105,8 @@ function App() {
                         
                     </Stack>
                     {workspace}
-                    <LoginDialog ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); }} />
-                    <RegisterDialog ref={registerRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<Home />); }} />
+                    <LoginDialog ref={loginRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<></>); }} />
+                    <RegisterDialog ref={registerRef} loggedIn={() => { setLoggedIn(true); setWorkspace(<></>); }} />
                 </>
             }
         </>

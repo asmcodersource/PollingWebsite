@@ -176,10 +176,12 @@ namespace PollingServer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    FieldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
                     PollAnswersId = table.Column<int>(type: "int", nullable: true),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TextFieldAnswer_Text = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Text = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: true),
+                    TextFieldAnswer_Text = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: true)
                 },
                 constraints: table =>
                 {

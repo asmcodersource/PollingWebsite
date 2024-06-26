@@ -7,7 +7,7 @@ using PollingServer.Models.Poll;
 
 namespace PollingServer.Controllers.Answers.DTOs
 {
-    public class AnswersDTO
+    public class AnswersItemDTO
     {
         [Required, Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -21,7 +21,7 @@ namespace PollingServer.Controllers.Answers.DTOs
         public DateTime AnswerTime { get; set; } = DateTime.UtcNow;
 
 
-        public AnswersDTO(PollAnswers pollAnswers)
+        public AnswersItemDTO(PollAnswers pollAnswers)
         {
             Id = pollAnswers.Id;
             UserId = pollAnswers.UserId;

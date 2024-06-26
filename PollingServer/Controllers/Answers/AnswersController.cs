@@ -31,10 +31,9 @@ namespace PollingServer.Controllers.Answers
             this.userFetchService = userFetchService;
         }
 
-        [HttpPost]
-        [Route("{pollId}")]
-        [ProducesResponseType(typeof(IEnumerable<List<ValidationErrorResponse>>), 400)]
+        [HttpPost("{pollId}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(IEnumerable<List<ValidationErrorResponse>>), 400)]
         [ReadableBodyStream, MaxBodyStreamLength(1 * 1024 * 1024)]
         public async Task<IActionResult> CreatePollAnswer(int pollId, [FromBody] List<BaseNewAnswersDTO> newAnswersDTOs )
         {
@@ -77,6 +76,8 @@ namespace PollingServer.Controllers.Answers
                 var truncatedAnswer = newAnswersDTOs[jsonCurrentElementIndex]; // it serrialized only properties of base class
                 var question = questions.Find((question) => question.Id == truncatedAnswer.QuestionId);
                 var parsedAnswer = BaseAnswer.ParseJsonByExplicitType(jsonElement.GetRawText(), question!.AnswerType);
+                parsedAnswer.FieldName = question.FieldName;
+                parsedAnswer.Description = question.Description;
                 List<ValidationResult> validationResults = new List<ValidationResult>();
                 validationResults.AddRange(parsedAnswer.ValidateObjectByModel());
                 validationResults.AddRange(parsedAnswer.ValidateByQuestion(question));
@@ -109,9 +110,7 @@ namespace PollingServer.Controllers.Answers
             }
         }
 
-        [Authorize]
-        [HttpGet]
-        [Route("{pollId}/{answerId}")]
+        [HttpGet("{pollId}/{answerId}"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<AnswerDTO>), 200)]
         public IActionResult GetPollAnswer(int pollId, int? answerId)
         {
@@ -132,10 +131,8 @@ namespace PollingServer.Controllers.Answers
             return Json(answer);
         }
 
-        [Authorize]
-        [HttpGet]
-        [Route("{pollId}")]
-        [ProducesResponseType(typeof(IEnumerable<AnswersDTO>), 200)]
+        [HttpGet("{pollId}"), Authorize]
+        [ProducesResponseType(typeof(IEnumerable<AnswersItemDTO>), 200)]
         public IActionResult GetPollAnswers(int pollId)
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
@@ -148,12 +145,10 @@ namespace PollingServer.Controllers.Answers
             // Ensure that user has access to this poll
             if (poll.OwnerId != user!.Id)
                 return StatusCode(StatusCodes.Status403Forbidden);
-            return Json(poll.Answers?.Select((answer) => new AnswersDTO(answer)));
+            return Json(poll.Answers?.Select((answer) => new AnswersItemDTO(answer)));
         }
 
-        [Authorize]
-        [HttpDelete]
-        [Route("{pollId}/{answerId}")]
+        [HttpDelete("{pollId}/{answerId}"), Authorize]
         [ProducesResponseType(200)]
         public IActionResult DeletePollAnswer(int pollId, int? answerId)
         {
@@ -176,9 +171,7 @@ namespace PollingServer.Controllers.Answers
             return StatusCode(StatusCodes.Status200OK);
         }
 
-        [Authorize]
-        [HttpDelete]
-        [Route("{pollId}")]
+        [HttpDelete("{pollId}"), Authorize]
         [ProducesResponseType(200)]
         public IActionResult DeletePollAnswers(int pollId)
         {

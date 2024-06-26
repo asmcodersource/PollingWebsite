@@ -12,8 +12,8 @@ using PollingServer.Models;
 namespace PollingServer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240521105548_Initial5")]
-    partial class Initial5
+    [Migration("20240626120516_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,10 +57,16 @@ namespace PollingServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
+
+                    b.Property<string>("FieldName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PollAnswersId")
                         .HasColumnType("int");
@@ -74,32 +80,6 @@ namespace PollingServer.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseAnswer");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.PollAnswers", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AnswerTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PollId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PollId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PollsAnswers");
                 });
 
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
@@ -165,6 +145,32 @@ namespace PollingServer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PollAllowedUsers");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.PollAnswers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AnswerTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PollId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PollsAnswers");
                 });
 
             modelBuilder.Entity("PollingServer.Models.Poll.Question.BaseQuestion", b =>
@@ -273,6 +279,7 @@ namespace PollingServer.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
+                        .HasMaxLength(4096)
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("SelectAnswer");
@@ -284,6 +291,7 @@ namespace PollingServer.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
+                        .HasMaxLength(4096)
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Answers", t =>
@@ -303,6 +311,7 @@ namespace PollingServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Options")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("SelectQuestion");
@@ -321,24 +330,9 @@ namespace PollingServer.Migrations
 
             modelBuilder.Entity("PollingServer.Models.Poll.Answer.BaseAnswer", b =>
                 {
-                    b.HasOne("PollingServer.Models.Poll.Answer.PollAnswers", null)
+                    b.HasOne("PollingServer.Models.Poll.PollAnswers", null)
                         .WithMany("BaseAnswers")
                         .HasForeignKey("PollAnswersId");
-                });
-
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.PollAnswers", b =>
-                {
-                    b.HasOne("PollingServer.Models.Poll.Poll", null)
-                        .WithMany("Answers")
-                        .HasForeignKey("PollId");
-
-                    b.HasOne("PollingServer.Models.User.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
@@ -373,6 +367,21 @@ namespace PollingServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PollingServer.Models.Poll.PollAnswers", b =>
+                {
+                    b.HasOne("PollingServer.Models.Poll.Poll", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("PollId");
+
+                    b.HasOne("PollingServer.Models.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PollingServer.Models.Poll.Question.BaseQuestion", b =>
                 {
                     b.HasOne("PollingServer.Models.Poll.Poll", null)
@@ -387,11 +396,6 @@ namespace PollingServer.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("PollingServer.Models.Poll.Answer.PollAnswers", b =>
-                {
-                    b.Navigation("BaseAnswers");
-                });
-
             modelBuilder.Entity("PollingServer.Models.Poll.Poll", b =>
                 {
                     b.Navigation("AllowedUsers");
@@ -399,6 +403,11 @@ namespace PollingServer.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("PollingServer.Models.Poll.PollAnswers", b =>
+                {
+                    b.Navigation("BaseAnswers");
                 });
 
             modelBuilder.Entity("PollingServer.Models.User.User", b =>

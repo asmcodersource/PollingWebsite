@@ -5,9 +5,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import QuizQuestionsEditor from './QuizQuestionsEditor/QuizQuestionsEditor'
 import QuizGeneralSettings from './QuizSettingEditor/QuizGeneralSettings';
-
-
-
+import QuizAnswersManager from './QuizAnswersManager/QuizAnswersManager'
 
 
 class QuizManager extends Component {
@@ -41,7 +39,7 @@ class QuizManager extends Component {
                                     <QuizQuestionsEditor quiz={this.props.quiz} />
                                 </Tab>
                                 <Tab eventKey="answers" title="Answers">
-                                    Tab content for Profile
+                                    <QuizAnswersManager quiz={this.props.quiz} />
                                 </Tab>
                             </Tabs>
                         </div>

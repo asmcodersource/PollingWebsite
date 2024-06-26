@@ -15,6 +15,10 @@ namespace PollingServer.Models.Poll.Answer
         [Required, Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public string? FieldName { get; set; }
+        public string? Description { get; set; }
+        public string? Discriminator { get; set; } = null!;
+
         public abstract List<ValidationResult> ValidateByQuestion(BaseQuestion baseQuestion);
 
         public List<ValidationResult> ValidateObjectByModel()

@@ -24,6 +24,7 @@
 .text-field-question-wrapper {
     display: flex;
     flex-direction: column;
+    transition: all 1s ease-out;
 }
 
 .select-question-wrapper {
@@ -51,11 +52,13 @@
     from {
         opacity: 0;
         height: 0px;
+        font-size: 0pt;
         padding: 0px 0px;
     }
 
     to {
         opacity: 1;
+        font-size: 10pt;
         height: fit-content;
         padding: 0px 10px;
     }
