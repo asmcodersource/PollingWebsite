@@ -33,7 +33,7 @@ class QuizManager extends Component {
                                 className="mb-3"
                             >
                                 <Tab eventKey="home" title="Settings">
-                                    <QuizGeneralSettings quiz={this.props.quiz} />
+                                    <QuizGeneralSettings quiz={this.props.quiz} hideManager={this.props.hideDialog} />
                                 </Tab>
                                 <Tab eventKey="questions" title="Questions">
                                     <QuizQuestionsEditor quiz={this.props.quiz} />

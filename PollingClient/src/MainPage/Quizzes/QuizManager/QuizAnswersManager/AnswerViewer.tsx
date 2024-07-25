@@ -98,7 +98,7 @@ const styles = {
     field: {
         display: "flex",
         justifyContent: "space-between",
-        borderBottom: "1px solid #ddd",
+        borderBottom: "1px dashed #666",
         padding: "5px 0",
     },
     fieldName: {

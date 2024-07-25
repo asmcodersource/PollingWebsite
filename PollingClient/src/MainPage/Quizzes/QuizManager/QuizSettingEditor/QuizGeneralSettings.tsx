@@ -1,6 +1,7 @@
 import './QuizGeneralSettings.css';
 import AllowedUsersEditor from './AllowedUsersEditor/AllowedUsersEditor'
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { useMemo, useState } from 'react'
 
 enum PollingType {
@@ -18,6 +19,7 @@ interface QuizSettings {
 
 
 const QuizGeneralSettings = (props: any) => {
+    const [showSureDialog, setShowSureDialog] = useState<boolean>(false);
     const [showAllowedUsers, setShowAllowedUsers] = useState<boolean>();
     const [settings, setSettings] = useState<QuizSettings>({ ...props.quiz, pollingType: props.quiz.type });
 
@@ -26,6 +28,18 @@ const QuizGeneralSettings = (props: any) => {
         return values.slice(0, Math.floor(values.length / 2));
     }, [Object.values(PollingType)]);
 
+    async function onDeletePressed() {
+        let response = await fetch(`/api/polls/${props.quiz.id}`, {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + sessionStorage.getItem('token')
+            },
+        });
+        setShowSureDialog(false);
+        props.hideManager();
+    }
 
     async function saveSettings() {
         try {
@@ -83,8 +97,19 @@ const QuizGeneralSettings = (props: any) => {
                 <></>
             }
             <div className="buttons-wrapper">
+                <Button variant="danger" onClick={() => setShowSureDialog(true)}>Delete</Button>
                 <Button variant="primary" onClick={saveSettings}>Save changes</Button>
             </div>
+            <Modal show={showSureDialog} fullscreen onHide={() => setShowSureDialog(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Are you sure?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>After deleting the survey, you will lose the ability to view the responses left. If you want to hide the survey from people, change the access type to "owner only"</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowSureDialog(false)}>Close</Button>
+                    <Button variant="danger" onClick={() => onDeletePressed()}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
             <AllowedUsersEditor poll={props.quiz} show={showAllowedUsers} setShow={(isShow : boolean) => setShowAllowedUsers(isShow)} />
         </div>
     )

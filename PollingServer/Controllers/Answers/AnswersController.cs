@@ -35,6 +35,7 @@ namespace PollingServer.Controllers.Answers
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(IEnumerable<List<ValidationErrorResponse>>), 400)]
         [ReadableBodyStream, MaxBodyStreamLength(1 * 1024 * 1024)]
+        [AllowAnonymous]
         public async Task<IActionResult> CreatePollAnswer(int pollId, [FromBody] List<BaseNewAnswersDTO> newAnswersDTOs )
         {
             Models.User.User? user = userFetchService.GetUserFromContext(HttpContext);
@@ -45,7 +46,8 @@ namespace PollingServer.Controllers.Answers
                     .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
-
+            if (user is null && poll.Type == PollingType.Anyone)
+                user = databaseContext.Users.Where(u => u.Nickname == "Anonymous").First();
             if (pollAccessService.IsUserHasAccessToPoll(poll, HttpContext) is not true)
                 return StatusCode(StatusCodes.Status403Forbidden);
 
@@ -78,9 +80,11 @@ namespace PollingServer.Controllers.Answers
                 var parsedAnswer = BaseAnswer.ParseJsonByExplicitType(jsonElement.GetRawText(), question!.AnswerType);
                 parsedAnswer.FieldName = question.FieldName;
                 parsedAnswer.Description = question.Description;
-                List<ValidationResult> validationResults = new List<ValidationResult>();
-                validationResults.AddRange(parsedAnswer.ValidateObjectByModel());
-                validationResults.AddRange(parsedAnswer.ValidateByQuestion(question));
+                List<ValidationResult> validationResults =
+                [
+                    .. parsedAnswer.ValidateObjectByModel(),
+                    .. parsedAnswer.ValidateByQuestion(question),
+                ];
                 if (validationResults.Count != 0) 
                 {
                     var validationErrorResponse = new ValidationErrorResponse(validationResults, question.Id);

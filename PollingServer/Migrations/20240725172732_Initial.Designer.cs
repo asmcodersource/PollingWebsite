@@ -12,7 +12,7 @@ using PollingServer.Models;
 namespace PollingServer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240626120516_Initial")]
+    [Migration("20240725172732_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

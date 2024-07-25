@@ -8,3 +8,13 @@
     padding-bottom: 15px;
     padding: 30px;
 }
+
+.add-button-wrapper {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    min-height: 100vh;
+    opacity: 1.0;
+    pointer-events: none;
+}

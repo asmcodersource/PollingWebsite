@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import QuizManager from './QuizManager/QuizManager.tsx'
 import Quiz, { Poll } from './Quiz.tsx';
+import AddButton from './AddButton.tsx'
+import CreateQuizDialog from './CreateQuizDialog.tsx'
 import './Quizzes.css'
-import { BaseQuestion } from '../../Questions/QuizQuestion.tsx';
 
 
 const placeholderQuizzes = [
@@ -26,6 +27,7 @@ function mapQuizDTO(quizDTO : any): Poll {
 const Quizzes = (props) => {
     const [dialog, setDialog] = useState(null);
     const [quizzes, setQuizzes] = useState(placeholderQuizzes);
+    const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
 
     function fetchPolls() {
         const quizzesRequest = new Promise(async (resolve, reject) => {
@@ -77,6 +79,10 @@ const Quizzes = (props) => {
                     )
                 )}
             </Container>
+            <div className="add-button-wrapper">
+                <AddButton onClick={() => setShowCreateDialog(true)} />
+            </div>
+            <CreateQuizDialog show={showCreateDialog} hide={() => { setShowCreateDialog(false); fetchPolls(); }} />
             {dialog}
         </>
     );

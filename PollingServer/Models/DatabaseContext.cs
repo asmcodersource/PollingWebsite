@@ -42,6 +42,13 @@ namespace PollingServer.Models
                     Password = "Qwerty123123",
                     Email = "qwerty123123@gmail.com",
                     RegistrationTime = DateTime.UtcNow,
+                },
+                new User.User
+                {
+                    Nickname = "Anonymous",
+                    Password = "SuperSecretAnonymousPassword",
+                    Email = "nonexistingemail",
+                    RegistrationTime = DateTime.UtcNow,
                 }
             );
             this.SaveChanges();
