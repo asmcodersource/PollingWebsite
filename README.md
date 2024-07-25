@@ -1,6 +1,6 @@
-# PollingServer
+# PollingWebsite
 
-PollingServer is a web application built with ASP.NET Core\React that allows users to create, view, and respond to simple survey forms. This project aims to provide an easy-to-use interface for managing surveys and collecting responses.
+PollingWebsite is a web application built with ASP.NET Core\React that allows users to create, view, and respond to simple survey forms. This project aims to provide an easy-to-use interface for managing surveys and collecting responses.
 
 ## Features
 
