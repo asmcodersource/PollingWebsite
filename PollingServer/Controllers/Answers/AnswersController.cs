@@ -123,6 +123,8 @@ namespace PollingServer.Controllers.Answers
                 .Where(p => p.Id == pollId)
                 .Include(p => p.Answers!)
                     .ThenInclude(a => a.BaseAnswers)
+                .Include(p => p.Answers!)
+                    .ThenInclude(a => a.User)
                 .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
@@ -143,6 +145,7 @@ namespace PollingServer.Controllers.Answers
             var poll = databaseContext.Polls
                 .Where(p => p.Id == pollId)
                 .Include(p => p.Answers!)
+                    .ThenInclude(a => a.User)
                 .FirstOrDefault();
             if (poll is null)
                 return StatusCode(StatusCodes.Status404NotFound);
